@@ -1,0 +1,642 @@
+VBCSCompilerPreWarmer: watching VBCSCompiler (PID 15656)
+VBCSCompilerPreWarmer: pre-warm launched (dotnet PID 32820)
+VBCSCompiler prewarm took 99.45 ms
+[Licensing::Module] Trying to connect to existing licensing client channel...
+Built from '6000.6/staging' branch; Version is '6000.6.4f1 (12bfff696524) revision 1228799'; Using compiler version '194234433'; Build Type 'Release'
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-greyson" at "2026-10-09T16:50:51.5041867Z"
+OS: 'Windows 11  (10.0.26200) Core' Language: 'en' Physical Memory: 32398 MB
+BatchMode: 0, IsHumanControllingUs: 1, StartBugReporterOnCrash: 1, Is64bit: 1
+System  architecture: x64
+Process architecture: x64
+Date: 2026-10-09T16:50:51Z
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 25536, path: "C:/Program Files/Unity Hub/UnityLicensingClient_V1/Unity.Licensing.Client.exe")
+[Licensing::Module] LicensingClient has failed validation; ignoring
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.18.3+d7ffd15
+  Session Id:              86ee4b948cb84529ab4a740d09e9137a
+  Correlation Id:          c0d1a49370ab0884b024a10af4b31e1d
+  External correlation Id: 8132002541724477391
+  Machine Id:              8EyefXVDHkjTyd8dhAv/dtSQrMI=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-greyson" (connect: 0.00s, validation: 0.00s, handshake: 0.11s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-greyson-notifications" at "2026-10-09T16:50:51.6143111Z"
+[Licensing::Client] Successfully updated the access token
+[Licensing::Module] Successfully updated the access token rHImGjjtuS...
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: 2476053942631-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.00
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] Licensing Background thread has ended after 0.12s
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\6000.6.4f1\Editor\Unity.exe
+-projectpath
+C:\Users\greyson\UnityProjects\Mockup_2
+-acceptSoftwareTermsForThisRunOnly
+-useHub
+-hubIPC
+-cloudEnvironment
+production
+-licensingIpc
+LicenseClient-greyson
+-hubSessionId
+6210bedf-4636-4ced-b15b-c38b2fd30ff8
+-accessToken
+rHImGjjtuSmtrCw905eEDWwy1FQo9AKcTsGlDrV6EOA002f
+Successfully changed project path to: C:\Users\greyson\UnityProjects\Mockup_2
+C:/Users/greyson/UnityProjects/Mockup_2
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-remapper-allocator-initial-capacity=32768"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-main-allocator-mimalloc-enabled=1"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+Player connection [26196]  Target information:
+
+Player connection [26196]  * "[IP] 138.47.119.201 [Port] 55504 [Flags] 2 [Guid] 2447813273 [EditorId] 2447813273 [Version] 1048832 [Id] WindowsEditor(7,greysonld) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [26196] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [26196] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+[Package Manager] Connected to IPC stream "Upm-36756" after 0.5 seconds.
+[Licensing::Client] Successfully resolved entitlement details
+Library Redirect Path: Library/
+Initialising UDS system complete:
+  - System type: Client
+  - Resource namespace: f4e56d2881285b19b40cc23d696551c8
+  - Shared memory size: 1073741824
+  - Command buffer id: 1052576
+  - Command buffer size: 8192
+  - Hashmap size: 4194304
+  - Service connected: false
+Launching Unity Data Store - C:/Program Files/Unity/Hub/Editor/6000.6.4f1/Editor/Data/Tools/Unity.DataStore.exe 
+Unity Data Store artifact dir = Library/DataStore, working dir = C:/Users/greyson/UnityProjects/Mockup_2Unity Data Store running and initialised
+[Physics::Module] Selected backend (deferred post-plugins).
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Initialize engine version: 6000.6.4f1 (12bfff696524)
+[EntityIdStore] init: VM path (explicit commit), pageSize=4096, blockCount=1048576, entitiesPerBlock=256, slots reserved=4294967296 bytes
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.6.4f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/Users/greyson/UnityProjects/Mockup_2/Assets
+GfxDevice: creating device client; kGfxThreadingModeThreaded
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: Intel(R) Arc(TM) 140V GPU (16GB) (ID=0x64a0)
+    Vendor:   Intel
+    VRAM:     18467 MB
+    Driver:   32.0.101.6042
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.6.4f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.6.4f1/Editor/Data/BCLExtensions/runtime/netstandard2.1'
+Mono path[2] = 'C:/Program Files/Unity/Hub/Editor/6000.6.4f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.6.4f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56756
+CodeReloadManager initialized
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.4f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.4f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.002714 seconds.
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Package Manager log level set to [2]
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  1.163 seconds
+Domain Reload Profiling: 1891ms
+	BeginReloadAssembly (171ms)
+		CreateAndSetChildDomain (5ms)
+	RebuildCommonClasses (6ms)
+	RebuildNativeTypeToScriptingClass (22ms)
+	initialDomainReloadingComplete (86ms)
+	LoadAllAssembliesAndSetupDomain (442ms)
+		LoadAssemblies (163ms)
+		TypeCache.Refresh (296ms)
+			TypeCache.ScanAssembly (279ms)
+		AnalyzeDomain (1ms)
+	FinalizeReload (1165ms)
+		SetupLoadedEditorAssemblies (0ms)
+			LogAssemblyErrors (3ms)
+			InitializePlatformSupportModulesInManaged (4ms)
+			BeforeProcessingInitializeOnLoad (169ms)
+			ProcessInitializeOnLoadAttributes (129ms)
+			ProcessInitializeOnLoadMethodAttributes (414ms)
+			EditorAssembliesLoaded (7ms)
+[Licensing::Client] Successfully resolved entitlement details
+Application.AssetDatabase Initial Refresh Start
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 56 packages:
+  Packages from [https://packages.unity.com]:
+    com.unity.ai.navigation@2.0.14 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.ai.navigation@134dd6a3b97b)
+    com.unity.analytics@3.8.2 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.analytics@c9d14a6bdec6)
+    com.unity.collab-proxy@2.13.6 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.collab-proxy@4628d2ba6ea4)
+    com.unity.ide.rider@3.0.38 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.ide.rider@1f60b3138684)
+    com.unity.ide.visualstudio@2.0.26 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.ide.visualstudio@a99d56dec63f)
+    com.unity.purchasing@4.15.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.purchasing@ffbc76639aab)
+    com.unity.xr.legacyinputhelpers@3.0.1 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.xr.legacyinputhelpers@3f62d634f63b)
+    com.unity.services.core@1.18.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.services.core@3464cb68d709)
+    com.unity.services.analytics@6.3.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.services.analytics@cde4e6cf92f9)
+    com.unity.nuget.newtonsoft-json@3.2.2 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.nuget.newtonsoft-json@4dfd81071c64)
+  Built-in packages:
+    com.unity.2d.sprite@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.2d.sprite@752945c75a6f)
+    com.unity.2d.tilemap@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.2d.tilemap@f4c7bd71ac8a)
+    com.unity.multiplayer.center@2.0.1 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.multiplayer.center@549886182930)
+    com.unity.test-framework@1.8.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.test-framework@80f691d4262b)
+    com.unity.timeline@6.6.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.timeline@c56d56b0070b)
+    com.unity.ugui@2.6.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.ugui@0727b404f3a0)
+    com.unity.modules.accessibility@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.accessibility)
+    com.unity.modules.adaptiveperformance@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.adaptiveperformance)
+    com.unity.modules.ai@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.ai)
+    com.unity.modules.androidjni@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.androidjni)
+    com.unity.modules.animation@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.animation)
+    com.unity.modules.assetbundle@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.assetbundle)
+    com.unity.modules.audio@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.audio)
+    com.unity.modules.cloth@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.cloth)
+    com.unity.modules.director@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.director)
+    com.unity.modules.imageconversion@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.imageconversion)
+    com.unity.modules.imgui@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.imgui)
+    com.unity.modules.jsonserialize@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.jsonserialize)
+    com.unity.modules.particlesystem@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.particlesystem)
+    com.unity.modules.physics@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.physics)
+    com.unity.modules.physics2d@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.physics2d)
+    com.unity.modules.physicscore2d@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.physicscore2d)
+    com.unity.modules.screencapture@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.screencapture)
+    com.unity.modules.terrain@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.terrain)
+    com.unity.modules.terrainphysics@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.terrainphysics)
+    com.unity.modules.tetgen@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.tetgen)
+    com.unity.modules.tilemap@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.tilemap)
+    com.unity.modules.timelinefoundation@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.timelinefoundation)
+    com.unity.modules.ui@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.ui)
+    com.unity.modules.uielements@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.uielements)
+    com.unity.modules.umbra@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.umbra)
+    com.unity.modules.unityanalytics@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.unityanalytics)
+    com.unity.modules.unitywebrequest@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.unitywebrequest)
+    com.unity.modules.unitywebrequestassetbundle@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.unitywebrequestassetbundle)
+    com.unity.modules.unitywebrequestaudio@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.unitywebrequestaudio)
+    com.unity.modules.unitywebrequesttexture@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.unitywebrequesttexture)
+    com.unity.modules.unitywebrequestwww@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.unitywebrequestwww)
+    com.unity.modules.vectorgraphics@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.vectorgraphics)
+    com.unity.modules.vehicles@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.vehicles)
+    com.unity.modules.video@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.video)
+    com.unity.modules.wind@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.wind)
+    com.unity.modules.xr@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.xr)
+    com.unity.modules.subsystems@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.subsystems)
+    com.unity.modules.hierarchycore@1.0.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.modules.hierarchycore)
+    com.unity.ext.nunit@2.1.0 (location: C:\Users\greyson\UnityProjects\Mockup_2\Library\PackageCache\com.unity.ext.nunit@0198eae3b53e)
+  Embedded packages:
+    com.merry-yellow.code-assist@file:C:\Users\greyson\UnityProjects\Mockup_2\Packages\com.merry-yellow.code-assist (location: C:\Users\greyson\UnityProjects\Mockup_2\Packages\com.merry-yellow.code-assist)
+[Package Manager] com.unity.analytics is deprecated: This package is deprecated and won't be compatible with future Unity versions. It will only receive critical updates, with no new features or bug fixes. Migrate to Unity Analytics: https://docs.unity.com/en-us/analytics
+[Package Manager] com.unity.purchasing@4.15.0 is deprecated: Unity IAP 4 is unsupported as of June 8, 2026. IAP 5 is the supported version going forward.
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.02 seconds
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.4f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: C:/Users/greyson/UnityProjects/Mockup_2
+ExitCode: 0 Duration: 0s548ms
+[671/858    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+*** Tundra build success (0.47 seconds), 1 items updated, 858 evaluated
+AssetDatabase: script compilation time: 1.358067s
+Total cache size 36279347
+Total cache size after purge 36279347, took 00:00:00.1087234
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory is not a mono symbol file
+Refreshing native plugins compatible for Editor in 2.90 ms, found 3 plugins.
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  1.351 seconds
+Domain Reload Profiling: 2531ms
+	BeginReloadAssembly (276ms)
+		DisableScriptedObjects (30ms)
+		CreateAndSetChildDomain (50ms)
+	RebuildCommonClasses (12ms)
+	RebuildNativeTypeToScriptingClass (21ms)
+	initialDomainReloadingComplete (69ms)
+	LoadAllAssembliesAndSetupDomain (801ms)
+		LoadAssemblies (469ms)
+		TypeCache.Refresh (191ms)
+			TypeCache.ScanAssembly (173ms)
+		AnalyzeDomain (56ms)
+			BuildScriptInfoCaches (50ms)
+			ResolveRequiredComponents (4ms)
+	FinalizeReload (1353ms)
+		SetupLoadedEditorAssemblies (0ms)
+			InitializePlatformSupportModulesInManaged (3ms)
+			BeforeProcessingInitializeOnLoad (174ms)
+			ProcessInitializeOnLoadAttributes (439ms)
+			ProcessInitializeOnLoadMethodAttributes (297ms)
+			AfterProcessingInitializeOnLoad (10ms)
+		AwakeInstancesAfterBackupRestoration (54ms)
+Starting new worker id: 0 with log in C:/Users/greyson/UnityProjects/Mockup_2/Logs/AssetImportWorkerHW0.log
+
+Asset Pipeline Refresh (id=2b32b2c4c5cc05b4ebbfc0270920c85e): Total: 4.604 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=1869 ms
+		Asset DB Callback time: managed=43 ms, native=28 ms
+		Scripting: domain reloads=1, domain reload time=1242 ms, compile time=1361 ms, other=58 ms
+		Project Asset Count: scripts=884, non-scripts=1340
+		Asset File Changes: new=0, changed=0, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 30.681ms
+	ApplyChangesToAssetFolders: 1.464ms
+	Scan: 89.269ms
+	Collect global state as custom dependencies: 34.201ms
+	CategorizeScriptCompilationAssets: 26.529ms
+	ProcessAssetsWithTransientArtifactChanges: 57.077ms
+	CategorizeAssets: 22.558ms
+	CompileScripts: 1361.434ms
+	ImportOutOfDateAssets: 1424.744ms (1365.801ms without children)
+		UnloadImportedAssets: 1.646ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.406ms
+		ImportSchedulerStart: 56.884ms
+	PostProcessAllAssets: 43.949ms
+		MonoPostProcessAllAssets: 43.885ms
+			SyncVS.PostprocessSyncProject 16.065ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 14.212ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 1.082ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 1.001ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.408ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.229ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.201ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.142ms
+	UnloadStreamsBegin: 1.784ms
+	PersistCurrentRevisions: 0.102ms
+	GenerateScriptTypeHashes: 2.741ms
+	GenerateScriptTypeSerializationHashes: 5.423ms
+	Untracked: 1502.178ms
+
+Application.AssetDatabase Initial Refresh End
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.03 seconds
+Scanning for USB devices : 2.865ms
+Initializing Unity extensions:
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-Script Practice
+Unloading 36 Unused Serialized files (Serialized files now loaded: 0)
+Loaded scene 'Assets/Scenes/MainMenu.unity'
+	Deserialize:            66.805 ms
+	Integration:            79.793 ms
+	Integration of assets:  3.823 ms
+	Thread Wait Time:       0.010 ms
+	Total Operation Time:   150.431 ms
+Unloading 3427 unused Assets / (3.0 MB). Loaded Objects now: 5234.
+Memory consumption went from 324.6 MB to 321.6 MB.
+Total: 14.147700 ms (FindLiveObjects: 0.592000 ms CreateObjectMapping: 0.138500 ms MarkObjects: 10.425400 ms  DeleteObjects: 2.705600 ms)
+
+[LAYOUT] C:/Users/greyson/AppData/Roaming/Unity/Editor-5.x/Preferences\Layouts\default does not exist. Copying base layouts.
+[LAYOUT] About to load UserSettings\Layouts\default-6000.dwlt, keepMainWindow=False
+[LAYOUT] About to save layout C:\Users\greyson\UnityProjects\Mockup_2\UserSettings\Layouts\default-6000.dwlt
+[LAYOUT] About to save layout C:/Users/greyson/AppData/Roaming/Unity/Editor-5.x/Preferences\Layouts\current\default-6000.dwlt
+[MODES] ModeService[default].InitializeCurrentMode
+[MODES] ModeService[default].RaiseModeChanged(default, default)
+This project uses Input Manager, which is marked for deprecation. To manage input in your project, use the <a href="https://docs.unity3d.com/Packages/com.unity.inputsystem@latest">Input System package</a> instead.
+<RI> Initializing input.
+XInput1_3.dll not found. Trying XInput9_1_0.dll instead...
+<RI> Input initialized.
+[Project] Loading completed in 14.690 seconds
+	Project init time: 				9.166 seconds
+		Template init time: 		0.000 seconds
+		Package Manager init time: 		0.522 seconds
+		Asset Database init time: 		0.299 seconds
+		Global illumination init time: 	0.004 seconds
+		Assemblies load time: 			1.957 seconds
+		Unity extensions init time: 	0.017 seconds
+		Asset Database refresh time: 	4.604 seconds
+	Scene opening time: 			1.498 seconds
+##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1791564666051,"processId":36756,"projectLoad":14.6904795,"projectInit":9.1658627,"templateInit":0.0,"packageManagerInit":0.5222896,"assetDatabaseInit":0.2993389,"globalIlluminationInit":0.003964,"assembliesLoad":1.9569241,"unityExtensionsInit":0.0165335,"assetDatabaseRefresh":4.6044675,"sceneOpening":1.4978702}
+##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1791564666051,"processId":36756,"editorVersion":"6000.6.4f1 (12bfff696524)","branch":"6000.6/staging","buildType":"Release","platform":"Windows"}
+[Licensing::Client] Successfully resolved entitlement details
+Created GICache directory at C:/Users/greyson/AppData/LocalLow/Unity/Caches/GiCache. Took: 0.127s, timestamps: [15.699 - 15.827]
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully updated the access token
+[Licensing::Module] Successfully updated access token: "rHImGjjt"... (expires: 2026-10-09T17:49:29Z)
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+Worker ready: AssetImportWorkerHW0 0
+Start Indexing on Editor startup
+[Indexing] Starting Initial Indexing for Assets
+[Licensing::Client] Successfully resolved entitlement details
+Starting new worker id: 1 with log in C:/Users/greyson/UnityProjects/Mockup_2/Logs/AssetImportWorkerHW1.log
+[Licensing::Client] Successfully resolved entitlement details
+Project ID request failed, Reason: The requested URL returned error: 403 (403).
+Unknown Unity Connect error (400). Please contact support at support@unity.com while processing request "https://services.unity.com/api/unity/legacy/v1/projects/56fac88e-ff2f-4d51-adbe-8886c21be2fa", HTTP error code 403
+.[Worker0] Imported GUID: efc2b29d68153b042b02e7f1a040ac14 - Path: Assets/PixelStudyArena/Art/bug_mantis.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '1649b070e6a31c88808c3d2981d84f67') in 0.2176164 seconds
+[Worker0] Imported GUID: 96a0819a85ac3d34b8e8b46172dfa8f4 - Path: Assets/PixelStudyArena/Art/bug_wasp.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: 'bc04e7306f5ed95349d3846e3442955c') in 0.014614 seconds
+[Worker0] Imported GUID: efd13ee73a153054ebd930a8a547b1c9 - Path: Assets/PixelStudyArena/Art/fx_firewave.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '282db0daea02f4e259b514ad83ec25bf') in 0.0173658 seconds
+[Worker0] Imported GUID: 0c0c738a8441dd647b89fb1ec25c54c3 - Path: Assets/PixelStudyArena/Art/tile_ground_fill_0.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: 'c5788f2462456b11334e9f8e3566154d') in 0.011247 seconds
+[Worker0] Imported GUID: 2573bb0d22ada354696bc4f1c4795e7a - Path: Assets/Scenes/MainMenu.unity - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '541923a162f5199ff92b2b4e09db3bfe') in 0.0087785 seconds
+[Worker0] Imported GUID: 832f003ef2cf1b045ae00a1adb7357ad - Path: Assets/PixelStudyArena/Art/fx_orb.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '6dbf8c35ab9d9a88b8c362ec3a63b9ee') in 0.006905 seconds
+[Worker0] Imported GUID: 8c9cfa26abfee488c85f1582747f6a02 - Path: Assets/Scenes/SampleScene.unity - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: 'f3478eb6b9d273ed231bcd36af5a4a6d') in 0.0040256 seconds
+[Worker0] Imported GUID: b9aed52a2961dd44e884cada9235e524 - Path: Assets/PixelStudyArena/Art/bug_tick.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: 'c272a4516a3745e52aef19097c3f88d2') in 0.0188011 seconds
+[Worker0] Imported GUID: ae1313a4bdde24b4c8b8d56cac3f7526 - Path: Assets/PixelStudyArena/Art/tile_backwall_top_1.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: 'e7389d741211f2f8b401122fde50a3b7') in 0.0075606 seconds
+[Worker0] Imported GUID: aef8168aedf95ca4cb2aea8a333163f8 - Path: Assets/PixelStudyArena/Art/tile_backwall_2.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: 'ff46e21cb8ad32376cccd19c31ea6052') in 0.0056728 seconds
+[Worker0] Imported GUID: 78bb73cca8a150b4f8ecafed6fd55409 - Path: Assets/PixelStudyArena/Art/door_portal.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '050b2be3cf6e4809d38e356497d2395b') in 0.0123663 seconds
+[Worker0] Imported GUID: 2823de318b285864588833932dd04b24 - Path: Assets/PixelStudyArena/Art/fx_acid.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '9f25aa6db06a1ca8e6655927c9fbfa3e') in 0.0117284 seconds
+[Worker0] Imported GUID: 7574df1cf7f4e1f4eaa8d7075d1de186 - Path: Assets/PixelStudyArena/Art/fx_poisonsac.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '9f537e705a993b0cea566166eff57611') in 0.0098244 seconds
+[Worker0] Imported GUID: b87ffc7aac794b645a97755a25bd485f - Path: Assets/PixelStudyArena/Art/fx_zap.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '6a69d492c19b683ccb4a89f7fb54bcb0') in 0.0105784 seconds
+[Worker0] Imported GUID: ea457557c0c2834438b78289abe04a2c - Path: Assets/PixelStudyArena/Art/prop_flame.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '11b8d7078a911e3c56e0b6da02ec3f35') in 0.0199694 seconds
+[Worker0] Imported GUID: 9206b8b80a0952f469c74ac7b2faccac - Path: Assets/PixelStudyArena/Art/fx_tornado.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '346b8f39002141bd36065f80e79723dd') in 0.0141429 seconds
+[Worker0] Imported GUID: 1b34652f5a7c33445801301b35dd04b6 - Path: Assets/PixelStudyArena/Art/tile_backwall_0.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: 'c140083308b1dae65882b4f9fc0179de') in 0.0073823 seconds
+[Worker0] Imported GUID: a26a94d71cedcd245abe2311c2e3ea54 - Path: Assets/PixelStudyArena/Art/bug_hornetqueen.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '98218b7af61b66dbf5b2760508c7a394') in 0.0147416 seconds
+[Worker0] Imported GUID: 2b87623c47b54f249acd97b319a48e88 - Path: Assets/PixelStudyArena/Art/bug_boss.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '31bc938cc951bf866492636ee4c4a6ed') in 0.0128226 seconds
+[Worker0] Imported GUID: e10f7cda8fad1ed47bc0a6d14bb3e93c - Path: Assets/PixelStudyArena/Art/tile_backwall_1.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '44a3c2847691a765f5a1042a80d6898f') in 0.0076778 seconds
+[Worker0] Imported GUID: 2555a21db6bc6cc4fa5f1698f5979d2e - Path: Assets/PixelStudyArena/Art/tile_backwall_top_0.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: 'f4318742e6b44f41e097cde5441aa2b0') in 0.0078509 seconds
+[Worker0] Imported GUID: 05954a5a40e309d4eaa11051137e24cc - Path: Assets/Scenes/Arena.unity - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '8cbc462c39993455ebacb0bf27672520') in 0.0073352 seconds
+[Worker0] Imported GUID: def83f352d3b949428a39beb2853da21 - Path: Assets/PixelStudyArena/Art/bug_beetle.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '07dd6e24def8185c8f1616693b8aae71') in 0.0139185 seconds
+[Worker0] Imported GUID: 995093fbb91851e43a7b31dd3653cbfc - Path: Assets/PixelStudyArena/Art/fx_bolt.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '80e666b671111cd29b4c57b297c63842') in 0.0110763 seconds
+[Worker0] Imported GUID: 98b804a9a31e0f1439222b575acb76d1 - Path: Assets/PixelStudyArena/Art/tile_ground_top_0.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: 'e53e722a6759ecf54aad044148b68620') in 0.0071518 seconds
+[Worker0] Imported GUID: 9ba17d6eb83310643858f367f94567f2 - Path: Assets/PixelStudyArena/Art/tile_ground_fill_2.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: 'a4e70ccd54f7685433f25d8f98fbde41') in 0.0114545 seconds
+[Worker0] Imported GUID: e18a67c71b34bf444b4875eadf063b68 - Path: Assets/PixelStudyArena/Art/tile_platform_1.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '12a4172ea1397cf508cae1ef90185251') in 0.0120801 seconds
+[Worker0] Imported GUID: 48d8c7d975b86984f9cf2a9735ab94e1 - Path: Assets/PixelStudyArena/Editor/ArenaArt.cs - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '2814aea69e9bd7a97034d61e612792e4') in 0.0052984 seconds
+[Worker0] Imported GUID: cd40c34b4f647ea46802e1c48e1bf411 - Path: Assets/PixelStudyArena/Art/tile_ground_fill_1.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '3d9acb12a34194d0143461dfb5edcc13') in 0.0085559 seconds
+[Worker0] Imported GUID: b9fa5515d564e6f408f5b33f53c22baf - Path: Assets/PixelStudyArena/Editor/ArenaBuilder.cs - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '7ef3e8c6d4b895521715985f017bbe51') in 0.0026099 seconds
+[Worker0] Imported GUID: 0271b14910b18654cab90a65879956a4 - Path: Assets/PixelStudyArena/Art/tile_ground_top_1.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '1a7bb061dd027114980c41d73f24167e') in 0.0105732 seconds
+[Worker0] Imported GUID: e5ea8f292a2c0744da74da03e4cf4a3d - Path: Assets/PixelStudyArena/Art/tile_ground_under.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '98f8b5d06cb1c2613b7103e9217f920e') in 0.007193 seconds
+[Worker0] Imported GUID: b4e49e7b28cdf6146979e838f63d7651 - Path: Assets/PixelStudyArena/Prefabs/PoisonCloud.prefab - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '41fa789ce5fd9f652e6457f96be3771e') in 0.0527133 seconds
+[Worker0] Imported GUID: aba66f94abca1da43817709c60e445ab - Path: Assets/PixelStudyArena/Art/tile_platform_0.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '1ac63de0b7c648d4a8def2ce0136fd61') in 0.0077044 seconds
+[Worker0] Imported GUID: 50b0201225bf7a5408726187d1f74c3c - Path: Assets/PixelStudyArena/Art/tile_platform_2.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '8c765a9baf95813a95e6e06effe70d74') in 0.0104735 seconds
+[Worker0] Imported GUID: 0bc17e9b684b70e42ba46ec5dad9236f - Path: Assets/PixelStudyUI/Prefabs/GameUI.prefab - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: 'b0fd61c1e3587bf29e9375901359c0d5') in 0.1609873 seconds
+[Worker0] Imported GUID: 60150ab91463d884fa1de86d8a7f2ba7 - Path: Assets/PixelStudyUI/Editor/PixelStudyUIBuilder.cs - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '063da2b341e49fd9d0f795df8df393b6') in 0.0041278 seconds
+[Worker0] Imported GUID: 2e912f8104467194aa8ef811e4a324a5 - Path: Assets/PixelStudyArena/Art/Knight/knight_runattack.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '6050bbcff3f75fee416544049fcec53e') in 0.0210018 seconds
+[Worker0] Imported GUID: 0172b92b22014234e92bf7f5028bdd2b - Path: Assets/PixelStudyArena/Art/Knight/knight_defend.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '27f67468f1cf0a735430db4c743e5032') in 0.0206144 seconds
+[Worker0] Imported GUID: 42348b894bd2d9f4f9166b3c8c5c3373 - Path: Assets/PixelStudyArena/Art/Knight/knight_hurt.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '050bcd1c6461e3ac1b61f05d2978b8b3') in 0.0157457 seconds
+[Worker0] Imported GUID: 2a14cf46546941045aac1cf1c623ea6b - Path: Assets/PixelStudyArena/Art/Knight/knight_attack3.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '16b82b69f632db47447b7ed7a4328df8') in 0.0183697 seconds
+[Worker0] Imported GUID: ba623d5d55485f94b9c1325e435f52d5 - Path: Assets/PixelStudyUI/Scripts/Core/SkillCatalog.cs - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '1c5ac6887b2cc5fb307647d36fd8443f') in 0.0055581 seconds
+[Worker0] Imported GUID: a7f0602093b597d4a8cf497110337830 - Path: Assets/PixelStudyArena/Art/Knight/knight_walk.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: 'cfef298afd6870e24914513000942895') in 0.0258998 seconds
+[Worker0] Imported GUID: 1563a5c2f9309974195b0fc5f6ec59e9 - Path: Assets/PixelStudyArena/Art/Knight/knight_protect.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '63c2d94864df53d937af122279c16212') in 0.0203453 seconds
+[Worker0] Imported GUID: 9601937f1bf179a4886bf300c1d19759 - Path: Assets/PixelStudyArena/Art/Knight/knight_attack2.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '805cf8d5faf1a0574db42a9f11696661') in 0.012765 seconds
+[Worker0] Imported GUID: 0e08912cc0239794b802bfe3241b3ba5 - Path: Assets/PixelStudyArena/Art/Knight/knight_jump.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '988bc67839cb8f1f984a3e73a89126e8') in 0.0164587 seconds
+[Worker0] Imported GUID: 5ef21c82d3ebcc84eba2ac224e8c7461 - Path: Assets/PixelStudyArena/Art/Knight/knight_attack1.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: 'd0e957939e23345f42e44dcb900a154e') in 0.0130215 seconds
+[Worker0] Imported GUID: b756087f054f7674bbba4a791170fbdb - Path: Assets/PixelStudyArena/Art/Knight/knight_run.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '167ec565a2440d71517b8c434b228a6a') in 0.0183662 seconds
+[Worker0] Imported GUID: 4b3d93c8206160141a13bec977ff18f6 - Path: Assets/PixelStudyArena/Art/Knight/knight_idle.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '917ca953b4158100490dfcfb288638fe') in 0.010782 seconds
+[Worker0] Imported GUID: 553f69f55e8e2064bb4794336eb6b36f - Path: Assets/PixelStudyArena/Art/Knight/knight_dead.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: 'bcfd461aa9addf54ce24e8e606c3b8e3') in 0.0370032 seconds
+[Worker0] Imported GUID: f09eae8c0ea04254b90c5386a034a225 - Path: Packages/com.unity.collab-proxy/Editor/Assets/Images/buttonssosigningoogle.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '823a73fd7554977548ad3f16ab7d4015') in 0.0154522 seconds
+[Worker0] Imported GUID: e2c5ee46f6b0148afbe40d935c70faee - Path: Packages/com.unity.collab-proxy/Editor/Assets/Images/d_ArrowCaretLeft.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '4e85d95616f2762f9b856022d628334f') in 0.0120584 seconds
+[Worker0] Imported GUID: 1c16a099b53fd4712b2d4cdb8fecd9f8 - Path: Packages/com.unity.collab-proxy/Editor/Assets/Images/ArrowCaretLeft.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '257927138ba45a2f3a0edd6f918ac68c') in 0.0106979 seconds
+[Worker0] Imported GUID: 3a4d62c64067bca4cbbd6f7fcad2e190 - Path: Packages/com.unity.collab-proxy/Editor/Views/DateFilter.cs - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '4182b331e051b68b28a3df0b21ca36c2') in 0.0063296 seconds
+[Worker0] Imported GUID: 5de67bf0a3c601f4bab93b4fd3314ab1 - Path: Packages/com.unity.collab-proxy/Editor/Assets/Images/d_hideversioncontrol@2x.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '7c6c7bd02cb8524b3b5086e5de470056') in 0.0116558 seconds
+[Worker0] Imported GUID: 63860c9f5f91cbb4ea813deafa1327a0 - Path: Packages/com.unity.collab-proxy/Editor/WebApi/SubscriptionDetailsResponse.cs - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: 'f63cb623a0919dedd420b0cd16e3b3d3') in 0.0045264 seconds
+[Worker0] Imported GUID: 3f227b28cf424364489edd67fce697bc - Path: Packages/com.unity.collab-proxy/Editor/AssetOverlays/Cache/AssetStatusCache.cs - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '7805de0dc36bc9f644762d8f7736a110') in 0.0059323 seconds
+[Worker0] Imported GUID: 421fea03dd9d4ac089ca279ee87c573b - Path: Packages/com.unity.collab-proxy/Editor/Views/EnableSwitchAndShelveFeatureDialog.cs - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '97464f9a90b6530b8eb1ac3162390e58') in 0.004244 seconds
+[Worker0] Imported GUID: 678db227e4ffec949980d309c0532b08 - Path: Packages/com.unity.collab-proxy/Editor/AssetMenu/Dialogs/CheckinDialog.cs - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: 'a4d004893ae14873a4866a77ccda5309') in 0.0032426 seconds
+[Worker0] Imported GUID: f4d4cddc7d40e49e18d2253e661465b2 - Path: Packages/com.unity.collab-proxy/Editor/Assets/Images/d_ArrowCaretRight.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '1d44bc6039ab6c17bd6785e2d1fd3e9b') in 0.0116503 seconds
+[Worker0] Imported GUID: d24e7e0b75e1a244bb9687d6fd4315ef - Path: Packages/com.unity.collab-proxy/Editor/Assets/Images/buttonssosigninemail.png - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: 'ab020e7be0d717651150ff83a153001c') in 0.0074824 seconds
+[Worker0] Imported GUID: 9e56b150f059e654b911faff982eacf8 - Path: Packages/com.unity.collab-proxy/Editor/_Deprecated/README.md - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '2a7d7ca3d012e58b532ef88e1f27cdbb') in 0.0042233 seconds
+[Worker0] Imported GUID: 8a6ec1abdba94827a2f174dae33832d2 - Path: Packages/com.unity.collab-proxy/Editor/Views/ShelvePendingChangesDialog.cs - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '9e257745568fc7154e1892126e6afdc5') in 0.0021628 seconds
+[Worker0] Imported GUID: f3cad5fee9fee5945b13e7e3518afb1b - Path: Packages/com.unity.collab-proxy/Lib/Editor/Unity.Plastic.Antlr3.Runtime.dll - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: 'b27f3aa061f7f297eb5d1f9fe93a033b') in 0.0039807 seconds
+[Worker0] Imported GUID: 1b769279d1324508b645aea1a29bae8c - Path: Packages/com.unity.collab-proxy/Editor/UnityInternals/UVCSToolbarButton_Legacy.cs - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '142c7c91582b0e92d085056580377fe2') in 0.0023985 seconds
+[Worker0] Imported GUID: a4362cb806af7495c834c5267b90e574 - Path: Packages/com.unity.collab-proxy/Lib/Editor/unityplastic.dll - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '288c9b9d89aa7c76eb79ad33c9108a4c') in 0.0038337 seconds
+Reloading assemblies for play mode.
+[Worker0] Imported GUID: e5fb93667cf08524f94b12181dbe3546 - Path: Packages/com.unity.collab-proxy/Lib/Editor/Unity.Plastic.Newtonsoft.Json.dll - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '4ab3ebccf29cfb69445015963d4fe2cd') in 0.0034686 seconds
+[Worker0] Imported GUID: 5bbb26813ae33c64d8937661111fb3c6 - Path: Packages/com.unity.collab-proxy/Editor/UVCSToolbar/UVCSToolbarButtonData.cs - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '1104f0b55ee304f6bed2188e92272ad5') in 0.0032695 seconds
+Reloading assemblies after forced synchronous recompile.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory is not a mono symbol file
+Worker ready: AssetImportWorkerHW1 1
+Refreshing native plugins compatible for Editor in 3.63 ms, found 3 plugins.
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  2.290 seconds
+Domain Reload Profiling: 3270ms
+	BeginReloadAssembly (614ms)
+		DisableScriptedObjects (128ms)
+		CreateAndSetChildDomain (257ms)
+	RebuildCommonClasses (13ms)
+	RebuildNativeTypeToScriptingClass (19ms)
+	initialDomainReloadingComplete (74ms)
+	LoadAllAssembliesAndSetupDomain (257ms)
+		LoadAssemblies (182ms)
+		TypeCache.Refresh (7ms)
+		AnalyzeDomain (6ms)
+			ResolveRequiredComponents (3ms)
+	FinalizeReload (2292ms)
+		SetupLoadedEditorAssemblies (0ms)
+			InitializePlatformSupportModulesInManaged (3ms)
+			BeforeProcessingInitializeOnLoad (161ms)
+			ProcessInitializeOnLoadAttributes (288ms)
+			ProcessInitializeOnLoadMethodAttributes (331ms)
+			AfterProcessingInitializeOnLoad (7ms)
+		AwakeInstancesAfterBackupRestoration (990ms)
+No restricted APIs configured; Validation skipped.
+Checking 21 assemblies for restricted APIs found 0 usage(s) in 5 ms
+Refreshing native plugins compatible for Editor in 3.49 ms, found 3 plugins.
+
+Asset Pipeline Refresh (id=17f287b00d714584f98340a701af61e3): Total: 4.093 seconds - Initiated by StopAssetImportingV2(ForceSynchronousImport | ForceDomainReload)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=2493 ms
+		Asset DB Callback time: managed=394 ms, native=163 ms
+		Scripting: domain reloads=1, domain reload time=1038 ms, compile time=3 ms, other=0 ms
+		Project Asset Count: scripts=884, non-scripts=1340
+		Asset File Changes: new=0, changed=0, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 2.271ms
+	ApplyChangesToAssetFolders: 0.269ms
+	Collect global state as custom dependencies: 13.416ms
+	ProcessAssetsWithTransientArtifactChanges: 111.935ms
+	CategorizeAssets: 16.431ms
+	CompileScripts: 3.205ms
+	ImportOutOfDateAssets: 2307.007ms (2302.065ms without children)
+		CollectScriptTypesHashes: 0.263ms
+		ReloadNativeAssets: 0.295ms
+		UnloadImportedAssets: 3.752ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.476ms
+		ImportSchedulerStart: 0.402ms
+	PostProcessAllAssets: 548.325ms
+		AssemblyValidation.PostprocessAllAssets 15.971ms
+		PostProcessCallbackCreateDeferredMaterials 7.880ms
+		PostprocessAssetsUpdateCachedIcon 6.672ms
+		ShaderAssetModifiedCallback 3.832ms
+		RaytracingShaderImportPostprocess 3.782ms
+		SpeedTreeImporter.PostprocessAllAssets 3.668ms
+		ComputeShaderImportPostprocess 3.100ms
+		LocalizationDatabase.AssetDatabasePostprocessCallback 1.587ms
+		BlockShaderImporter.PostprocessAllAssets 1.538ms
+		XRBuildSystem.XRAssetImported 0.854ms
+		MonoPostProcessAllAssets: 390.158ms
+			SyncVS.PostprocessSyncProject 296.099ms
+			AssetPostprocessor.OnPostprocessAllAssets 14.862ms
+			SpriteSlicePostprocessor.OnPostprocessAllAssets 11.142ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 11.055ms
+			AssetChangedListener.OnPostprocessAllAssets 8.775ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 6.810ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 6.793ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 2.787ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 2.253ms
+			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 1.139ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.907ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.510ms
+			UVCSAssetPostprocessor.OnPostprocessAllAssets 0.501ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 0.484ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 0.439ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.412ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.405ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.357ms
+			ThemePostprocessor.OnPostprocessAllAssets 0.325ms
+			AssetProcessor.OnPostprocessAllAssets 0.311ms
+			AssetEvents.OnPostprocessAllAssets 0.302ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.225ms
+			SamplePostprocessor.OnPostprocessAllAssets 0.224ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.172ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.165ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.159ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.152ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.133ms
+			AssetReloadNotifier.OnPostprocessAllAssets 0.121ms
+	PostAssetChangesProfiler: 8.888ms
+	GatherAllCurrentPrimaryImportResultRevisions: 0.178ms
+	UnloadStreamsBegin: 1.860ms
+	PersistCurrentRevisions: 0.121ms
+	GenerateScriptTypeHashes: 2.461ms
+	GenerateScriptTypeSerializationHashes: 4.780ms
+	Untracked: 1071.049ms
+
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            14.110 ms
+	Integration:            111.346 ms
+	Integration of assets:  0.024 ms
+	Thread Wait Time:       0.024 ms
+	Total Operation Time:   125.505 ms
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+Asset Pipeline Refresh (id=65796fa2eea9a324bae52f163bd80fb6): Total: 0.007 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+TrimDiskCacheJob: Current cache size 0mb
+Asset Pipeline Refresh (id=6182bf5abd1e18c4585513a70ef774a3): Total: 0.009 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.03 seconds
+Unloading 83 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 5.254100 ms
+Loaded scene 'Assets/Scenes/Arena.unity'
+	Deserialize:            47.489 ms
+	Integration:            73.388 ms
+	Integration of assets:  4.630 ms
+	Thread Wait Time:       4.286 ms
+	Total Operation Time:   129.794 ms
+Unloading 4816 unused Assets / (19.7 MB). Loaded Objects now: 7258.
+Memory consumption went from 510.6 MB to 490.9 MB.
+Total: 28.498600 ms (FindLiveObjects: 2.381500 ms CreateObjectMapping: 0.601700 ms MarkObjects: 20.048500 ms  DeleteObjects: 5.095400 ms)
+
+Unloading 11 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 3.804800 ms
+Loaded scene 'Assets/Scenes/Arena.unity'
+	Deserialize:            20.445 ms
+	Integration:            49.113 ms
+	Integration of assets:  2.094 ms
+	Thread Wait Time:       4.692 ms
+	Total Operation Time:   76.344 ms
+Unloading 1720 unused Assets / (0.9 MB). Loaded Objects now: 7261.
+Memory consumption went from 492.9 MB to 492.0 MB.
+Total: 25.522100 ms (FindLiveObjects: 1.126200 ms CreateObjectMapping: 0.242200 ms MarkObjects: 22.794900 ms  DeleteObjects: 1.038000 ms)
+
+Unloading 9 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 2.523300 ms
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            10.728 ms
+	Integration:            24.294 ms
+	Integration of assets:  0.003 ms
+	Thread Wait Time:       2.518 ms
+	Total Operation Time:   37.542 ms
+Unloading 71 unused Assets / (138.2 KB). Loaded Objects now: 6432.
+Memory consumption went from 492.2 MB to 492.1 MB.
+Total: 21.862000 ms (FindLiveObjects: 0.924400 ms CreateObjectMapping: 0.103000 ms MarkObjects: 20.305100 ms  DeleteObjects: 0.227900 ms)
+
+MonoPathRemapper: Attempts to remap: 27059; Successful remaps: 12698
+Serialized file version minimum: 23, current 23
+[LAYOUT] About to save layout C:\Users\greyson\UnityProjects\Mockup_2\UserSettings\Layouts\default-6000.dwlt
+[LAYOUT] About to save layout C:/Users/greyson/AppData/Roaming/Unity/Editor-5.x/Preferences\Layouts\current\default-6000.dwlt
+Clearing [LiberationSans SDF - Fallback] dynamic font asset data.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+TMPro.EditorEventCallbacks/<>c:<InitializeFontAssetResourceChangeCallBacks>b__0_0 () (at ./Library/PackageCache/com.unity.ugui@0727b404f3a0/Editor/TMP/TMP_EditorResourceManager.cs:36)
+UnityEditor.EditorApplication:Internal_EditorApplicationQuit ()
+
+(Filename: ./Library/PackageCache/com.unity.ugui@0727b404f3a0/Editor/TMP/TMP_EditorResourceManager.cs Line: 36)
+
+Importing 'GUID: 2e498d1c8094910479dc3e1b768306a4 - Path: Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset' with importer (NativeFormatImporter)
+Imported 'GUID: 2e498d1c8094910479dc3e1b768306a4' -> (Import Result ID: '632ff03ccef77c9d91eec1e76bcf57f7') in 0.011 seconds [static dependencies only]. Details - ImportResultOutputID=15c8c079d336d28f621b2cb41a27d1c5 DependenciesID=9e1712e1a89c24953b2e2522391c8636 StaticDependenciesID=f4b9ea77a87a231e44986e0077d3f57a 
+Refreshing native plugins compatible for Editor in 10.35 ms, found 3 plugins.
+Asset Pipeline Refresh (id=8900501d8cebfc946a7a2b1b3a742eb8): Total: 0.086 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input Polling Thread exited.
+Input System module state changed to: Shutdown.
+[Licensing::IpcConnector] LicenseClient-greyson-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-greyson channel disconnected successfully.
+Lingering sessions upon destruction of worker manager
+Shut down UDS service system complete
+Unity Data Store service shutdown timeout
+Unity Data Store service was successfully shut down
+UDS shutting down local client system
+AcceleratorClientConnectionCallback - disconnected - :0
+Cleanup mono
+CodeReloadManager destroyed
+abort_threads: Failed aborting id: 0000000000006190, mono_thread_manage will ignore it
+
+abort_threads: Failed aborting id: 0000000000006264, mono_thread_manage will ignore it
+
+abort_threads: Failed aborting id: 0000000000006190, mono_thread_manage will ignore it
+
+abort_threads: Failed aborting id: 0000000000006264, mono_thread_manage will ignore it
+
+debugger-agent: Unable to listen on 3556
+VBCSCompilerPreWarmer: requested VBCSCompiler shutdown
+Checking for leaked weakptr:
+  Found no leaked weakptrs.
+[Package Manager] Server process was shutdown
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1791575803680,"processId":36756,"allocatedMemory":13449147,"memoryLabels":[{"Default":189218},{"Permanent":15516},{"NewDelete":72133},{"Thread":4198064},{"Manager":31357},{"VertexData":8},{"Geometry":816},{"Texture":24},{"Shader":855128},{"Material":132},{"GfxDevice":55968},{"Animation":952},{"FreeType":8},{"FontEngine":736},{"Physics":1970},{"Physics2D":16},{"Serialization":35360},{"Input":42840},{"JobScheduler":256},{"TextLib":14806},{"Mono":48},{"ScriptingNativeRuntime":1292664},{"BaseObject":48912},{"Resource":1444},{"Renderer":2504},{"Transform":4685},{"File":28188},{"WebCam":616},{"Culling":32},{"Terrain":11442},{"Wind":24},{"STL":40},{"String":472236},{"StaticString":3808},{"Utility":2673882},{"Curl":1492},{"PoolAlloc":2168},{"AI":80},{"TypeTree":17165},{"ScriptManager":18984},{"CodeReload":448},{"RuntimeInitializeOnLoadManager":64},{"Sprites":102},{"SpriteAtlas":120},{"GI":7816},{"Director":8296},{"CloudService":7584},{"WebRequest":11176},{"VR":49650},{"SceneManager":608},{"Video":208},{"LazyScriptCache":32},{"Camera":729},{"Secure":265},{"SerializationCache":9256},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":768},{"Hierarchy":1188},{"UIElements":40},{"CoreStats":14456},{"Identifiers":7152},{"Gui":234},{"EditorUtility":413332},{"VersionControl":8},{"Undo":931},{"AssetDatabase":2406107},{"AssetImporter":40},{"EditorGi":328},{"UnityConnect":37750},{"Upm":1988},{"UpmDiagnostics":8},{"AssetCompliance":96},{"DrivenProperties":72},{"LocalIPC":264},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3604},{"Windowing":456},{"Licensing":12807},{"AssetReference":32},{"IPCStream":32}]}
