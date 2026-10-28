@@ -7,9 +7,11 @@ public class EnemyScript : MonoBehaviour
 
     private Vector3 startPosition;
     private int direction = 1;
+    private Animator animator;
 
 
-    public int health = 3;
+
+    public int health = 5;
 
     void Start()
     {
@@ -30,9 +32,22 @@ public class EnemyScript : MonoBehaviour
         }
     }
 
+    void Awake()
+    {
+        animator = GetComponent<Animator>();
+    }
     public void TakeDamage(int damage)
     {
         health -= damage;
+        Debug.Log("Enemy health remaining:" + health);
+
+        // plays the hurt animation
+        if (animator != null)
+        {
+            animator.SetTrigger("Hurt");
+        }        
+        
+        // Enemy dies when health reaches zero
         if (health <= 0)
         {
             Destroy(gameObject);

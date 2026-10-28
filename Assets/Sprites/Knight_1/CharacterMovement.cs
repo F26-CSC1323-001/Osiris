@@ -6,6 +6,7 @@ public class CharacterMovement : MonoBehaviour
     public Animator animator;
     public bool isMoving = false;
     public bool isRunning = false;
+    public bool isDefending = false;
     public float jumpForce = 5f;
     public Rigidbody2D rb;
 
@@ -32,6 +33,8 @@ public class CharacterMovement : MonoBehaviour
         isRunning = Input.GetKey(KeyCode.LeftShift) && isMoving;
         animator.SetBool("IsMoving", isMoving);
         animator.SetBool("IsRunning", isRunning);
+        
+        // Jump with Space Bar
         if(Input.GetKeyDown(KeyCode.Space))
         {
             animator.SetTrigger("Jump");
@@ -40,12 +43,28 @@ public class CharacterMovement : MonoBehaviour
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             }
         }
-        if (Input.GetMouseButtonDown(0))
+        
+        // Attack while clicking Left Mouse
+        if (Input.GetMouseButtonDown(0) && !isDefending)
         {
             animator.SetTrigger("Attack");
             Attack();
             
         }
+        
+        // Defend while holding G
+        if (Input.GetKey(KeyCode.B))
+        {
+            isDefending = true;
+        }
+        else
+        {
+            isDefending = false;
+        }
+        animator.SetBool("IsDefending", isDefending);
+
+        
+   
 
         Debug.Log("IsMoving: " + isMoving);
         Debug.Log("IsRunning" + isRunning);
@@ -53,7 +72,8 @@ public class CharacterMovement : MonoBehaviour
         
     }
 
-    void Attack()
+    
+void Attack()
     {
         if (attackPoint == null)
         {
@@ -73,7 +93,8 @@ public class CharacterMovement : MonoBehaviour
                 if (enemyScript != null)
                 {
                     enemyScript.TakeDamage(attackDamage);
-                    Debug.Log("Enemy is hit!");
+                    Debug.Log("Enemy is hit!");                    
+
                 }
             
         }
