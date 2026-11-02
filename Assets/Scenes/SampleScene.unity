@@ -145,7 +145,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.3, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1566588292}
@@ -643,7 +643,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyScript
   speed: 1
   distance: 1
-  health: 3
+  health: 5
 --- !u!1 &1566588291
 GameObject:
   m_ObjectHideFlags: 0
@@ -756,10 +756,11 @@ MonoBehaviour:
   animator: {fileID: 1566588295}
   isMoving: 0
   isRunning: 0
+  isDefending: 0
   jumpForce: 5
   rb: {fileID: 1566588296}
   attackPoint: {fileID: 215664802}
-  attackRange: 1
+  attackRange: 0.5
   attackDamage: 1
 --- !u!95 &1566588295
 Animator:

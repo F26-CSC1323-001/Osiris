@@ -1,0 +1,417 @@
+{
+  "name": "Obsidian Crab",
+  "version": "1.0",
+  "canvas": [
+    96,
+    96
+  ],
+  "ground_y": 78,
+  "center_x": 48,
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "suggested_fps": {
+    "Idle": 8,
+    "Walk": 10,
+    "Attack": 10,
+    "Death": 10
+  },
+  "states": {
+    "Stand": {
+      "type": "static",
+      "frames": {
+        "south": "Stand/south.png",
+        "south-east": "Stand/south-east.png",
+        "east": "Stand/east.png",
+        "north-east": "Stand/north-east.png",
+        "north": "Stand/north.png",
+        "north-west": "Stand/north-west.png",
+        "west": "Stand/west.png",
+        "south-west": "Stand/south-west.png"
+      }
+    },
+    "Idle": {
+      "type": "animation",
+      "fps": 8,
+      "frames": {
+        "south": [
+          "Idle/south/frame_00.png",
+          "Idle/south/frame_01.png",
+          "Idle/south/frame_02.png",
+          "Idle/south/frame_03.png",
+          "Idle/south/frame_04.png",
+          "Idle/south/frame_05.png",
+          "Idle/south/frame_06.png",
+          "Idle/south/frame_07.png"
+        ],
+        "south-east": [
+          "Idle/south-east/frame_00.png",
+          "Idle/south-east/frame_01.png",
+          "Idle/south-east/frame_02.png",
+          "Idle/south-east/frame_03.png",
+          "Idle/south-east/frame_04.png",
+          "Idle/south-east/frame_05.png",
+          "Idle/south-east/frame_06.png",
+          "Idle/south-east/frame_07.png"
+        ],
+        "east": [
+          "Idle/east/frame_00.png",
+          "Idle/east/frame_01.png",
+          "Idle/east/frame_02.png",
+          "Idle/east/frame_03.png",
+          "Idle/east/frame_04.png",
+          "Idle/east/frame_05.png",
+          "Idle/east/frame_06.png",
+          "Idle/east/frame_07.png"
+        ],
+        "north-east": [
+          "Idle/north-east/frame_00.png",
+          "Idle/north-east/frame_01.png",
+          "Idle/north-east/frame_02.png",
+          "Idle/north-east/frame_03.png",
+          "Idle/north-east/frame_04.png",
+          "Idle/north-east/frame_05.png",
+          "Idle/north-east/frame_06.png",
+          "Idle/north-east/frame_07.png"
+        ],
+        "north": [
+          "Idle/north/frame_00.png",
+          "Idle/north/frame_01.png",
+          "Idle/north/frame_02.png",
+          "Idle/north/frame_03.png",
+          "Idle/north/frame_04.png",
+          "Idle/north/frame_05.png",
+          "Idle/north/frame_06.png",
+          "Idle/north/frame_07.png"
+        ],
+        "north-west": [
+          "Idle/north-west/frame_00.png",
+          "Idle/north-west/frame_01.png",
+          "Idle/north-west/frame_02.png",
+          "Idle/north-west/frame_03.png",
+          "Idle/north-west/frame_04.png",
+          "Idle/north-west/frame_05.png",
+          "Idle/north-west/frame_06.png",
+          "Idle/north-west/frame_07.png"
+        ],
+        "west": [
+          "Idle/west/frame_00.png",
+          "Idle/west/frame_01.png",
+          "Idle/west/frame_02.png",
+          "Idle/west/frame_03.png",
+          "Idle/west/frame_04.png",
+          "Idle/west/frame_05.png",
+          "Idle/west/frame_06.png",
+          "Idle/west/frame_07.png"
+        ],
+        "south-west": [
+          "Idle/south-west/frame_00.png",
+          "Idle/south-west/frame_01.png",
+          "Idle/south-west/frame_02.png",
+          "Idle/south-west/frame_03.png",
+          "Idle/south-west/frame_04.png",
+          "Idle/south-west/frame_05.png",
+          "Idle/south-west/frame_06.png",
+          "Idle/south-west/frame_07.png"
+        ]
+      }
+    },
+    "Walk": {
+      "type": "animation",
+      "fps": 10,
+      "frames": {
+        "south": [
+          "Walk/south/frame_00.png",
+          "Walk/south/frame_01.png",
+          "Walk/south/frame_02.png",
+          "Walk/south/frame_03.png",
+          "Walk/south/frame_04.png",
+          "Walk/south/frame_05.png",
+          "Walk/south/frame_06.png",
+          "Walk/south/frame_07.png",
+          "Walk/south/frame_08.png"
+        ],
+        "south-east": [
+          "Walk/south-east/frame_00.png",
+          "Walk/south-east/frame_01.png",
+          "Walk/south-east/frame_02.png",
+          "Walk/south-east/frame_03.png",
+          "Walk/south-east/frame_04.png",
+          "Walk/south-east/frame_05.png",
+          "Walk/south-east/frame_06.png",
+          "Walk/south-east/frame_07.png",
+          "Walk/south-east/frame_08.png"
+        ],
+        "east": [
+          "Walk/east/frame_00.png",
+          "Walk/east/frame_01.png",
+          "Walk/east/frame_02.png",
+          "Walk/east/frame_03.png",
+          "Walk/east/frame_04.png",
+          "Walk/east/frame_05.png",
+          "Walk/east/frame_06.png",
+          "Walk/east/frame_07.png",
+          "Walk/east/frame_08.png"
+        ],
+        "north-east": [
+          "Walk/north-east/frame_00.png",
+          "Walk/north-east/frame_01.png",
+          "Walk/north-east/frame_02.png",
+          "Walk/north-east/frame_03.png",
+          "Walk/north-east/frame_04.png",
+          "Walk/north-east/frame_05.png",
+          "Walk/north-east/frame_06.png",
+          "Walk/north-east/frame_07.png",
+          "Walk/north-east/frame_08.png"
+        ],
+        "north": [
+          "Walk/north/frame_00.png",
+          "Walk/north/frame_01.png",
+          "Walk/north/frame_02.png",
+          "Walk/north/frame_03.png",
+          "Walk/north/frame_04.png",
+          "Walk/north/frame_05.png",
+          "Walk/north/frame_06.png",
+          "Walk/north/frame_07.png",
+          "Walk/north/frame_08.png"
+        ],
+        "north-west": [
+          "Walk/north-west/frame_00.png",
+          "Walk/north-west/frame_01.png",
+          "Walk/north-west/frame_02.png",
+          "Walk/north-west/frame_03.png",
+          "Walk/north-west/frame_04.png",
+          "Walk/north-west/frame_05.png",
+          "Walk/north-west/frame_06.png",
+          "Walk/north-west/frame_07.png",
+          "Walk/north-west/frame_08.png"
+        ],
+        "west": [
+          "Walk/west/frame_00.png",
+          "Walk/west/frame_01.png",
+          "Walk/west/frame_02.png",
+          "Walk/west/frame_03.png",
+          "Walk/west/frame_04.png",
+          "Walk/west/frame_05.png",
+          "Walk/west/frame_06.png",
+          "Walk/west/frame_07.png",
+          "Walk/west/frame_08.png"
+        ],
+        "south-west": [
+          "Walk/south-west/frame_00.png",
+          "Walk/south-west/frame_01.png",
+          "Walk/south-west/frame_02.png",
+          "Walk/south-west/frame_03.png",
+          "Walk/south-west/frame_04.png",
+          "Walk/south-west/frame_05.png",
+          "Walk/south-west/frame_06.png",
+          "Walk/south-west/frame_07.png",
+          "Walk/south-west/frame_08.png"
+        ]
+      }
+    },
+    "Attack": {
+      "type": "animation",
+      "fps": 10,
+      "frames": {
+        "south": [
+          "Attack/south/frame_00.png",
+          "Attack/south/frame_01.png",
+          "Attack/south/frame_02.png",
+          "Attack/south/frame_03.png",
+          "Attack/south/frame_04.png",
+          "Attack/south/frame_05.png",
+          "Attack/south/frame_06.png",
+          "Attack/south/frame_07.png",
+          "Attack/south/frame_08.png"
+        ],
+        "south-east": [
+          "Attack/south-east/frame_00.png",
+          "Attack/south-east/frame_01.png",
+          "Attack/south-east/frame_02.png",
+          "Attack/south-east/frame_03.png",
+          "Attack/south-east/frame_04.png",
+          "Attack/south-east/frame_05.png",
+          "Attack/south-east/frame_06.png",
+          "Attack/south-east/frame_07.png",
+          "Attack/south-east/frame_08.png"
+        ],
+        "east": [
+          "Attack/east/frame_00.png",
+          "Attack/east/frame_01.png",
+          "Attack/east/frame_02.png",
+          "Attack/east/frame_03.png",
+          "Attack/east/frame_04.png",
+          "Attack/east/frame_05.png",
+          "Attack/east/frame_06.png",
+          "Attack/east/frame_07.png",
+          "Attack/east/frame_08.png"
+        ],
+        "north-east": [
+          "Attack/north-east/frame_00.png",
+          "Attack/north-east/frame_01.png",
+          "Attack/north-east/frame_02.png",
+          "Attack/north-east/frame_03.png",
+          "Attack/north-east/frame_04.png",
+          "Attack/north-east/frame_05.png",
+          "Attack/north-east/frame_06.png",
+          "Attack/north-east/frame_07.png",
+          "Attack/north-east/frame_08.png"
+        ],
+        "north": [
+          "Attack/north/frame_00.png",
+          "Attack/north/frame_01.png",
+          "Attack/north/frame_02.png",
+          "Attack/north/frame_03.png",
+          "Attack/north/frame_04.png",
+          "Attack/north/frame_05.png",
+          "Attack/north/frame_06.png",
+          "Attack/north/frame_07.png",
+          "Attack/north/frame_08.png"
+        ],
+        "north-west": [
+          "Attack/north-west/frame_00.png",
+          "Attack/north-west/frame_01.png",
+          "Attack/north-west/frame_02.png",
+          "Attack/north-west/frame_03.png",
+          "Attack/north-west/frame_04.png",
+          "Attack/north-west/frame_05.png",
+          "Attack/north-west/frame_06.png",
+          "Attack/north-west/frame_07.png",
+          "Attack/north-west/frame_08.png"
+        ],
+        "west": [
+          "Attack/west/frame_00.png",
+          "Attack/west/frame_01.png",
+          "Attack/west/frame_02.png",
+          "Attack/west/frame_03.png",
+          "Attack/west/frame_04.png",
+          "Attack/west/frame_05.png",
+          "Attack/west/frame_06.png",
+          "Attack/west/frame_07.png",
+          "Attack/west/frame_08.png"
+        ],
+        "south-west": [
+          "Attack/south-west/frame_00.png",
+          "Attack/south-west/frame_01.png",
+          "Attack/south-west/frame_02.png",
+          "Attack/south-west/frame_03.png",
+          "Attack/south-west/frame_04.png",
+          "Attack/south-west/frame_05.png",
+          "Attack/south-west/frame_06.png",
+          "Attack/south-west/frame_07.png",
+          "Attack/south-west/frame_08.png"
+        ]
+      }
+    },
+    "Death": {
+      "type": "animation",
+      "fps": 10,
+      "frames": {
+        "south": [
+          "Death/south/frame_00.png",
+          "Death/south/frame_01.png",
+          "Death/south/frame_02.png",
+          "Death/south/frame_03.png",
+          "Death/south/frame_04.png",
+          "Death/south/frame_05.png",
+          "Death/south/frame_06.png",
+          "Death/south/frame_07.png",
+          "Death/south/frame_08.png"
+        ],
+        "south-east": [
+          "Death/south-east/frame_00.png",
+          "Death/south-east/frame_01.png",
+          "Death/south-east/frame_02.png",
+          "Death/south-east/frame_03.png",
+          "Death/south-east/frame_04.png",
+          "Death/south-east/frame_05.png",
+          "Death/south-east/frame_06.png",
+          "Death/south-east/frame_07.png",
+          "Death/south-east/frame_08.png"
+        ],
+        "east": [
+          "Death/east/frame_00.png",
+          "Death/east/frame_01.png",
+          "Death/east/frame_02.png",
+          "Death/east/frame_03.png",
+          "Death/east/frame_04.png",
+          "Death/east/frame_05.png",
+          "Death/east/frame_06.png",
+          "Death/east/frame_07.png",
+          "Death/east/frame_08.png"
+        ],
+        "north-east": [
+          "Death/north-east/frame_00.png",
+          "Death/north-east/frame_01.png",
+          "Death/north-east/frame_02.png",
+          "Death/north-east/frame_03.png",
+          "Death/north-east/frame_04.png",
+          "Death/north-east/frame_05.png",
+          "Death/north-east/frame_06.png",
+          "Death/north-east/frame_07.png",
+          "Death/north-east/frame_08.png"
+        ],
+        "north": [
+          "Death/north/frame_00.png",
+          "Death/north/frame_01.png",
+          "Death/north/frame_02.png",
+          "Death/north/frame_03.png",
+          "Death/north/frame_04.png",
+          "Death/north/frame_05.png",
+          "Death/north/frame_06.png",
+          "Death/north/frame_07.png",
+          "Death/north/frame_08.png"
+        ],
+        "north-west": [
+          "Death/north-west/frame_00.png",
+          "Death/north-west/frame_01.png",
+          "Death/north-west/frame_02.png",
+          "Death/north-west/frame_03.png",
+          "Death/north-west/frame_04.png",
+          "Death/north-west/frame_05.png",
+          "Death/north-west/frame_06.png",
+          "Death/north-west/frame_07.png",
+          "Death/north-west/frame_08.png"
+        ],
+        "west": [
+          "Death/west/frame_00.png",
+          "Death/west/frame_01.png",
+          "Death/west/frame_02.png",
+          "Death/west/frame_03.png",
+          "Death/west/frame_04.png",
+          "Death/west/frame_05.png",
+          "Death/west/frame_06.png",
+          "Death/west/frame_07.png",
+          "Death/west/frame_08.png"
+        ],
+        "south-west": [
+          "Death/south-west/frame_00.png",
+          "Death/south-west/frame_01.png",
+          "Death/south-west/frame_02.png",
+          "Death/south-west/frame_03.png",
+          "Death/south-west/frame_04.png",
+          "Death/south-west/frame_05.png",
+          "Death/south-west/frame_06.png",
+          "Death/south-west/frame_07.png",
+          "Death/south-west/frame_08.png"
+        ]
+      }
+    }
+  },
+  "colors": [
+    "Purple",
+    "Red",
+    "Blue",
+    "Green",
+    "Gold"
+  ],
+  "note": "Each color folder (Purple, Red, Blue, Green, Gold) holds the full set of states; frame paths below are relative to a color folder."
+}

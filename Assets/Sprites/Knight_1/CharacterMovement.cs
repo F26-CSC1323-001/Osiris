@@ -38,7 +38,7 @@ public class CharacterMovement : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Space))
         {
             animator.SetTrigger("Jump");
-            if (rb == null)
+            if (rb != null)
             {
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             }
@@ -95,6 +95,13 @@ void Attack()
                     enemyScript.TakeDamage(attackDamage);
                     Debug.Log("Enemy is hit!");                    
 
+                }
+
+              BossScript bossScript = hit.GetComponentInParent<BossScript>();
+                if (bossScript != null)
+                {
+                    bossScript.TakeDamage(attackDamage);
+                    Debug.Log("Boss is hit!");
                 }
             
         }
