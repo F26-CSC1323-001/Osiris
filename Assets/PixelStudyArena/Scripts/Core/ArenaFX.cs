@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -23,8 +23,69 @@ namespace PixelStudy.Arena
         public Sprite ringSprite;
         public Sprite glowSprite;
         public Sprite fireSlashSprite;
+        public Sprite[] zapFrames;
 
         const float HitStopScale = 0.04f;
+
+        // Time layers, multiplied together: hit stop x slow motion (boss kill) x focus (a big skill
+        // slows the world while the knight keeps full speed). A menu pause (timeScale 0) wins over all.
+        static bool stopped;
+        static float slowScale = 1f, focusScale = 1f, focusTarget = 1f, focusFade = 0.15f;
+        static float focusDim = 0.55f, darkenAmount, darkenTimer;
+        Coroutine slowMo;
+        SpriteRenderer dim;
+        static Sprite whiteSprite;
+
+        /// <summary>
+        /// How much faster than the world the knight runs (2 while a skill has slowed the world to 0.5x).
+        /// The knight multiplies its own timers, animation and movement by this.
+        /// </summary>
+        public static float PlayerTimeScale => 1f / focusScale;
+
+        /// <summary>A plain white 1x1-unit square for overlays.</summary>
+        public static Sprite WhiteSprite
+        {
+            get
+            {
+                if (whiteSprite == null)
+                    whiteSprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0f, 0f, 4f, 4f), new Vector2(0.5f, 0.5f), 4f);
+                return whiteSprite;
+            }
+        }
+
+        static void ApplyTime()
+        {
+            if (Time.timeScale == 0f) return; // a menu has paused the game; it sets 1 again when it closes
+            // never below 0.02: other scripts treat anything under 0.01 as "paused by a menu"
+            Time.timeScale = Mathf.Max(0.02f, (stopped ? HitStopScale : 1f) * slowScale * focusScale);
+        }
+
+        /// <summary>
+        /// Slows everything except the knight (Flame Slash, Thousand Cuts) and darkens the world behind
+        /// him by dim (0..1). Call EndFocus when the move is over.
+        /// </summary>
+        public static void BeginFocus(float worldScale, float dim = 0.55f)
+        {
+            focusScale = focusTarget = Mathf.Clamp(worldScale, 0.05f, 1f);
+            focusDim = dim;
+            ApplyTime();
+        }
+
+        /// <summary>Darkens the world behind the knight for a moment without slowing it (storms gathering).</summary>
+        public static void Darken(float amount, float seconds)
+        {
+            darkenAmount = amount;
+            darkenTimer = seconds;
+        }
+
+        /// <summary>Lets the world speed back up over a short moment.</summary>
+        public static void EndFocus(float fade = 0.15f)
+        {
+            focusTarget = 1f;
+            focusFade = Mathf.Max(0.01f, fade);
+        }
+
+        public static bool Focused => focusScale < 0.999f;
 
         class Number
         {
@@ -60,13 +121,53 @@ namespace PixelStudy.Arena
         void Awake()
         {
             Instance = this;
+            stopped = false;
+            slowScale = focusScale = focusTarget = 1f;
+            darkenTimer = 0f;
             bursts = CreateBurstSystem();
         }
 
         void OnDestroy()
         {
             if (Instance == this) Instance = null;
-            if (Mathf.Approximately(Time.timeScale, HitStopScale)) Time.timeScale = 1f;
+            stopped = false;
+            slowScale = focusScale = focusTarget = 1f;
+            if (Time.timeScale > 0f) Time.timeScale = 1f;
+        }
+
+        void Update()
+        {
+            float dt = Time.unscaledDeltaTime;
+            if (focusScale != focusTarget)
+                focusScale = Mathf.MoveTowards(focusScale, focusTarget, dt / focusFade);
+            ApplyTime();
+            UpdateDim(dt);
+        }
+
+        /// <summary>While the world is slowed, everything behind the knight darkens a little.</summary>
+        void UpdateDim(float dt)
+        {
+            darkenTimer -= dt;
+            float want = Mathf.Max(Mathf.Clamp01((1f - focusScale) / 0.5f) * focusDim, darkenTimer > 0f ? darkenAmount : 0f);
+            if (dim == null)
+            {
+                if (want <= 0f) return;
+                var cam = Camera.main;
+                if (cam == null) return;
+                var go = new GameObject("FocusDim");
+                go.transform.SetParent(cam.transform, false);
+                go.transform.localPosition = new Vector3(0f, 0f, 9f);
+                go.transform.localScale = new Vector3(200f, 200f, 1f);
+                dim = go.AddComponent<SpriteRenderer>();
+                dim.sprite = WhiteSprite;
+                dim.material = particleMaterial;
+                dim.sortingOrder = 15; // above bugs and the level, under the knight and effects
+                dim.color = new Color(0.05f, 0.02f, 0.04f, 0f);
+            }
+            var c = dim.color;
+            c = new Color(0.05f, 0.02f, 0.04f, Mathf.MoveTowards(c.a, want, dt * (want > c.a ? 6f : 3f)));
+            dim.color = c;
+            dim.enabled = c.a > 0.002f;
         }
 
         ParticleSystem CreateBurstSystem()
@@ -106,36 +207,47 @@ namespace PixelStudy.Arena
 
         // ------------------------------------------------------------------ statics
 
-        public static void Shake(float trauma) => CameraFollow2D.Shake(trauma);
+        /// <summary>Camera shake. A big one (slams, wall crashes, eruptions) also booms.</summary>
+        public static void Shake(float trauma)
+        {
+            CameraFollow2D.Shake(trauma);
+            if (trauma >= 0.6f) Sfx.Play("boom", Mathf.Clamp01(trauma), 1.15f - 0.3f * Mathf.Clamp01(trauma));
+        }
 
         /// <summary>Freezes the action for a split second so hits feel heavy.</summary>
         public static void HitStop(float seconds)
         {
-            if (Instance == null || Time.timeScale < 0.5f) return; // paused by a menu, or already stopped
+            if (Instance == null || Time.timeScale == 0f || stopped) return; // paused by a menu, or already stopped
             if (Instance.hitStop != null) Instance.StopCoroutine(Instance.hitStop);
             Instance.hitStop = Instance.StartCoroutine(Instance.HitStopRoutine(seconds));
         }
 
         IEnumerator HitStopRoutine(float seconds)
         {
-            Time.timeScale = HitStopScale;
+            stopped = true;
+            ApplyTime();
             yield return new WaitForSecondsRealtime(seconds);
-            if (Mathf.Approximately(Time.timeScale, HitStopScale)) Time.timeScale = 1f;
+            stopped = false;
+            ApplyTime();
             hitStop = null;
         }
 
-        /// <summary>Slow motion (boss kill). Gives way to menus that pause the game.</summary>
+        /// <summary>Slow motion for everything, the knight included (boss kill). Gives way to menus.</summary>
         public static void SlowMo(float scale, float seconds)
         {
-            if (Instance == null || Time.timeScale < 0.5f) return;
-            Instance.StartCoroutine(Instance.SlowMoRoutine(scale, seconds));
+            if (Instance == null || Time.timeScale == 0f) return;
+            if (Instance.slowMo != null) Instance.StopCoroutine(Instance.slowMo);
+            Instance.slowMo = Instance.StartCoroutine(Instance.SlowMoRoutine(scale, seconds));
         }
 
         IEnumerator SlowMoRoutine(float scale, float seconds)
         {
-            Time.timeScale = scale;
+            slowScale = scale;
+            ApplyTime();
             yield return new WaitForSecondsRealtime(seconds);
-            if (Mathf.Approximately(Time.timeScale, scale)) Time.timeScale = 1f;
+            slowScale = 1f;
+            ApplyTime();
+            slowMo = null;
         }
 
         public static void Burst(Vector2 position, Color color, int count, float speed = 6f, float size = 0.14f, float life = 0.55f, float upward = 2f)
@@ -212,6 +324,7 @@ namespace PixelStudy.Arena
             e.renderer.flipX = facing < 0;
             e.startScale = new Vector3(size * 0.8f, size * 0.8f, 1f);
             e.endScale = new Vector3(size * 1.15f, size * 1.05f, 1f);
+            e.renderer.transform.localScale = e.startScale;
             e.renderer.sortingOrder = 26;
         }
 
@@ -227,6 +340,7 @@ namespace PixelStudy.Arena
             var e = Instance.Spawn(sprite, position, color, life, additive);
             e.startScale = startScale;
             e.endScale = endScale;
+            e.renderer.transform.localScale = startScale; // not last use's size, even for this first frame
             e.renderer.transform.rotation = Quaternion.Euler(0f, 0f, rotation);
             e.renderer.flipX = flipX;
             e.renderer.sortingOrder = order;
@@ -251,6 +365,36 @@ namespace PixelStudy.Arena
             PlaySprite(sprite, from, Color.white, life * 0.6f, false, new Vector3(length / 2f, 0.7f, 1f), new Vector3(length / 2f, 0.4f, 1f), angle, 0f, false, 32);
         }
 
+        /// <summary>Runs an effect a moment later in real time (e.g. a screen flash right after an impact frame).</summary>
+        public static void After(float seconds, System.Action action)
+        {
+            if (Instance == null || action == null) return;
+            Instance.StartCoroutine(Instance.AfterRoutine(seconds, action));
+        }
+
+        IEnumerator AfterRoutine(float seconds, System.Action action)
+        {
+            yield return new WaitForSecondsRealtime(seconds);
+            action();
+        }
+
+        /// <summary>A small lightning arc with the default zap sprites.</summary>
+        public static void Zap(Vector2 from, Vector2 to, Color color, float life = 0.12f)
+        {
+            if (Instance != null) Zap(Instance.zapFrames, from, to, color, life);
+        }
+
+        /// <summary>A long streak of light from one point to another (sprite drawn along +x from its left-middle pivot, length units long at scale 1).</summary>
+        public static void Streak(Sprite sprite, Vector2 from, Vector2 to, Color color, float life, float width, float spriteLength = 4f, int order = 26)
+        {
+            var d = to - from;
+            float length = d.magnitude;
+            if (sprite == null || length < 0.05f) return;
+            float angle = Mathf.Atan2(d.y, d.x) * Mathf.Rad2Deg;
+            float sx = length / spriteLength;
+            PlaySprite(sprite, from, color, life, true, new Vector3(sx, width, 1f), new Vector3(sx, width * 0.2f, 1f), angle, 0f, false, order);
+        }
+
         /// <summary>Brief full-screen flash (Thunderclap).</summary>
         public static void ScreenFlash(Color color, float life)
         {
@@ -258,6 +402,7 @@ namespace PixelStudy.Arena
             if (Instance == null || cam == null || Instance.glowSprite == null) return;
             var e = Instance.Spawn(Instance.glowSprite, cam.transform.position, color, life, true);
             e.startScale = e.endScale = Vector3.one * 90f;
+            e.renderer.transform.localScale = e.startScale;
             e.renderer.sortingOrder = 60;
             e.follow = cam.transform;
             e.followOffset = new Vector3(0f, 0f, 10f);
@@ -271,11 +416,13 @@ namespace PixelStudy.Arena
             e.renderer.flipX = facing < 0;
             e.startScale = new Vector3(size * 0.75f, size * 0.85f, 1f);
             e.endScale = new Vector3(size * 1.2f, size * 1.1f, 1f);
+            e.renderer.transform.localScale = e.startScale;
             e.renderer.sortingOrder = 27;
             var glow = Instance.Spawn(Instance.fireSlashSprite != null ? Instance.fireSlashSprite : Instance.slashSprite, position, new Color(1f, 0.6f, 0.2f, 0.8f), 0.3f, true);
             glow.renderer.flipX = facing < 0;
             glow.startScale = new Vector3(size * 0.9f, size, 1f);
             glow.endScale = new Vector3(size * 1.4f, size * 1.3f, 1f);
+            glow.renderer.transform.localScale = glow.startScale;
             glow.renderer.sortingOrder = 28;
         }
 
@@ -286,6 +433,18 @@ namespace PixelStudy.Arena
             var e = Instance.Spawn(Instance.ringSprite, position, color, life, true);
             e.startScale = Vector3.one * from;
             e.endScale = Vector3.one * to;
+            e.renderer.transform.localScale = e.startScale;
+            e.renderer.sortingOrder = 27;
+        }
+
+        /// <summary>A ring squashed flat, like a shockwave rolling out across the floor.</summary>
+        public static void FlatRing(Vector2 position, Color color, float from, float to, float life, float flatten = 0.3f)
+        {
+            if (Instance == null) return;
+            var e = Instance.Spawn(Instance.ringSprite, position, color, life, true);
+            e.startScale = new Vector3(from, from * flatten, 1f);
+            e.endScale = new Vector3(to, to * flatten, 1f);
+            e.renderer.transform.localScale = e.startScale;
             e.renderer.sortingOrder = 27;
         }
 
@@ -295,6 +454,7 @@ namespace PixelStudy.Arena
             var e = Instance.Spawn(Instance.glowSprite, position, color, life, true);
             e.startScale = Vector3.one * size;
             e.endScale = Vector3.one * size * 1.3f;
+            e.renderer.transform.localScale = e.startScale;
             e.renderer.sortingOrder = 24;
         }
 
@@ -307,6 +467,7 @@ namespace PixelStudy.Arena
             e.followOffset = Vector3.up * height;
             e.startScale = Vector3.one * 1.4f;
             e.endScale = Vector3.one;
+            e.renderer.transform.localScale = e.startScale;
             e.renderer.sortingOrder = 40;
         }
 
@@ -369,7 +530,8 @@ namespace PixelStudy.Arena
             return e;
         }
 
-        void Update()
+        // LateUpdate: runs after everything that spawns effects this frame, so new ones are set up before drawing.
+        void LateUpdate()
         {
             float dt = Time.unscaledDeltaTime;
 

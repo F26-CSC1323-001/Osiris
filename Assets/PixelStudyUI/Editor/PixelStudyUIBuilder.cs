@@ -103,7 +103,7 @@ namespace PixelStudy.EditorTools
             LoadAssets();
             BuildGameUIPrefab();
             BuildMainMenuScene();
-            AddGameUIToGameScene();
+            // SampleScene is the group's own scene now, so it's left alone (the arenas get the GameUI from ArenaBuilder).
             SetBuildScenes();
             AssetDatabase.SaveAssets();
             Debug.Log("[PixelStudyUI] Built MainMenu scene, GameUI prefab and build settings.");
@@ -241,7 +241,7 @@ namespace PixelStudy.EditorTools
             Stretch(title.rectTransform);
             titleGroup.AddComponent<UIFloat>().amplitude = 6f;
 
-            Sub(t, "Study hard. Squash bugs. Climb 30 floors.", new Vector2(0f, 236f), 32);
+            Sub(t, "Study hard. Squash bugs. Climb 50 floors.", new Vector2(0f, 236f), 32);
             Divider(t, new Vector2(0f, 186f), 560f);
 
             var stack = UI("Buttons", t);
@@ -330,7 +330,7 @@ namespace PixelStudy.EditorTools
             var screen = MakeScreen(parent, "QuestionGeneratorScreen");
             var t = screen.transform;
             Title(t, "QUESTION GENERATOR", 72, new Vector2(0f, 458f));
-            Sub(t, "Paste your class notes and turn them into quiz questions for the tower.", new Vector2(0f, 398f), 26);
+            Sub(t, "Paste your class notes and the AI turns them into quiz questions for the tower.", new Vector2(0f, 398f), 26);
 
             g.backButton = Btn(t, "Back", "Back", Ghost, new Vector2(200f, 64f), 28);
             Place(Rect(g.backButton.gameObject), TopLeft, new Vector2(40f, -40f), new Vector2(200f, 64f), TopLeft);
@@ -345,8 +345,10 @@ namespace PixelStudy.EditorTools
             g.setNameField = InputField(body, "SetName", "e.g. Data Structures Week 3", false);
             Place(Rect(g.setNameField.gameObject), TopLeft, new Vector2(44f, -76f), new Vector2(600f, 64f), TopLeft);
 
-            g.activeSetText = Text(body, "ActiveSet", "Active set: " + QuestionBank.BuiltInSetName, 24, DimText, TextAlignmentOptions.Right);
-            Place(g.activeSetText.rectTransform, TopRight, new Vector2(-124f, -108f), new Vector2(620f, 40f), new Vector2(1f, 0.5f));
+            // where the question server (BackEnd/app.py) runs: this computer, or a teammate's on the same network
+            Label(body, "AI SERVER", new Vector2(690f, -40f));
+            g.serverField = InputField(body, "Server", QuestionGeneratorController.DefaultServer, false);
+            Place(Rect(g.serverField.gameObject), TopLeft, new Vector2(690f, -76f), new Vector2(540f, 64f), TopLeft);
 
             Label(body, "PASTE YOUR NOTES", new Vector2(44f, -168f));
             g.notesField = InputField(body, "Notes", "Paste notes here...\n\nTip: lines like \"A stack is a LIFO list.\" make the best questions.", true);
@@ -361,6 +363,8 @@ namespace PixelStudy.EditorTools
             Place(g.statusText.rectTransform, TopLeft, new Vector2(44f, -458f), new Vector2(440f, 70f), new Vector2(0f, 0.5f));
 
             g.listHeader = Label(body, "GENERATED QUESTIONS (0)", new Vector2(44f, -522f));
+            g.activeSetText = Text(body, "ActiveSet", "Active set: " + QuestionBank.BuiltInSetName, 24, DimText, TextAlignmentOptions.Right);
+            Place(g.activeSetText.rectTransform, TopRight, new Vector2(-44f, -537f), new Vector2(760f, 40f), new Vector2(1f, 0.5f));
 
             var list = ScrollList(body, out var content);
             Place(Rect(list.gameObject), TopLeft, new Vector2(44f, -556f), new Vector2(1312f, 244f), TopLeft);
@@ -469,35 +473,43 @@ namespace PixelStudy.EditorTools
             var kb = MakeScreen(parent, "KeyBindingsScreen");
             var k = kb.transform;
             if (inGame) Dim(k, 0.86f);
-            Title(k, "CONTROLS", 80, new Vector2(0f, 410f));
-            Sub(k, "Mockup controls: move and jump. Keyboard or a gamepad.", new Vector2(0f, 340f), 24);
+            Title(k, "CONTROLS", 80, new Vector2(0f, 424f));
+            Sub(k, "Arena controls. Keyboard + mouse, or a gamepad. Rebinding is coming in a later update.", new Vector2(0f, 356f), 24);
 
-            var kbody = Panel(k, "Panel", PanelColor, out var kroot);
-            Place(kroot, Center, new Vector2(0f, -40f), new Vector2(1100f, 400f));
+            // Mockup 2's knight: walk, one jump, the sword and Flame Slash
             var bindings = new (string action, string[] keys)[]
             {
                 ("Move", new[] { "A", "D", "or", "←", "→" }),
                 ("Jump", new[] { "Space", "or", "W" }),
                 ("Drop through platform", new[] { "S", "+", "Space" }),
+                ("Attack (3-hit combo)", new[] { "J", "or", "Left Click" }),
+                ("Jump attack", new[] { "J", "or", "Left Click", "in the air" }),
+                ("Critical hit", new[] { "J", "next to a staggered bug" }),
+                ("Flame Slash", new[] { "Z" }),
+                ("Break free of a grab", new[] { "mash any key" }),
                 ("Pause", new[] { "Esc" }),
                 ("Answer quiz", new[] { "1", "2", "3", "4" }),
             };
+            var kbody = Panel(k, "Panel", PanelColor, out var kroot);
+            Place(kroot, Center, new Vector2(0f, -40f), new Vector2(1100f, 30f + bindings.Length * 47f));
             for (int i = 0; i < bindings.Length; i++)
             {
-                float y = -42f - i * 68f;
-                RowLabel(kbody, bindings[i].action, y);
+                float y = -36f - i * 47f;
+                var label = Text(kbody, "Label_" + bindings[i].action, bindings[i].action, 28, Parchment, TextAlignmentOptions.Left, false, matShadow);
+                Place(label.rectTransform, TopLeft, new Vector2(64f, y), new Vector2(420f, 46f), LeftMiddle);
                 var keys = UI("Keys", kbody);
-                Place(Rect(keys), TopRight, new Vector2(-60f, y), new Vector2(560f, 60f), RightMiddle);
+                Place(Rect(keys), TopRight, new Vector2(-60f, y), new Vector2(600f, 48f), RightMiddle);
                 HStack(keys, 10f, TextAnchor.MiddleRight);
                 foreach (var key in bindings[i].keys)
                 {
-                    if (key == "or" || key == "hold" || key == "+") KeyWord(keys.transform, key);
+                    // lowercase words ("or", "hold", hints) are plain text; everything else is a key cap
+                    if (key == "+" || (key.Length > 1 && (char.IsLower(key[0]) || key[0] == '('))) KeyWord(keys.transform, key);
                     else KeyChip(keys.transform, key);
                 }
                 if (i < bindings.Length - 1)
                 {
                     var line = Img(kbody, "Separator", sWhite, Hex("#2C2348"));
-                    Place(line.rectTransform, TopCenter, new Vector2(0f, y - 34f), new Vector2(1000f, 4f));
+                    Place(line.rectTransform, TopCenter, new Vector2(0f, y - 23.5f), new Vector2(1000f, 3f));
                 }
             }
 
@@ -548,7 +560,7 @@ namespace PixelStudy.EditorTools
 
             // Stats panel (top left)
             var body = Panel(t, "StatsPanel", WithAlpha(PanelColor, 0.94f), out var root);
-            Place(root, TopLeft, new Vector2(24f, -24f), new Vector2(580f, 200f), TopLeft);
+            Place(root, TopLeft, new Vector2(24f, -24f), new Vector2(580f, 226f), TopLeft);
 
             var heart = Img(body, "HeartIcon", iHeart, Color.white);
             Place(heart.rectTransform, TopLeft, new Vector2(52f, -56f), new Vector2(52f, 52f), Center);
@@ -559,17 +571,26 @@ namespace PixelStudy.EditorTools
             hud.healthText = Text(barRect, "Value", "75 / 100", 22, Parchment, TextAlignmentOptions.Center, true, matShadow);
             Stretch(hud.healthText.rectTransform);
 
+            // Stamina (Elden Ring green): attacks, rolls and blocking use it, it refills when you stop
+            var stamina = Bar(body, "StaminaBar", Hex("#4FB35A"), Hex("#4FB35A"), 0.8f, out var staminaRect);
+            Place(staminaRect, TopLeft, new Vector2(96f, -82f), new Vector2(390f, 24f), TopLeft);
+            stamina.lowThreshold = 0f;
+            stamina.speed = 18f;
+            stamina.trailDelay = 0.25f;
+            stamina.trailSpeed = 0.9f;
+            hud.staminaBar = stamina;
+
             var gem = Img(body, "TokenIcon", iGem, Color.white);
-            Place(gem.rectTransform, TopLeft, new Vector2(52f, -112f), new Vector2(44f, 44f), Center);
+            Place(gem.rectTransform, TopLeft, new Vector2(52f, -136f), new Vector2(44f, 44f), Center);
             hud.tokensIcon = gem.rectTransform;
             hud.tokensText = Text(body, "Tokens", "Upgrade Tokens: 2", 28, Parchment, TextAlignmentOptions.Left, false, matShadow);
-            Place(hud.tokensText.rectTransform, TopLeft, new Vector2(96f, -112f), new Vector2(440f, 40f), LeftMiddle);
+            Place(hud.tokensText.rectTransform, TopLeft, new Vector2(96f, -136f), new Vector2(440f, 40f), LeftMiddle);
 
             var coin = Img(body, "CoinIcon", iCoin, Color.white);
-            Place(coin.rectTransform, TopLeft, new Vector2(52f, -160f), new Vector2(44f, 44f), Center);
+            Place(coin.rectTransform, TopLeft, new Vector2(52f, -184f), new Vector2(44f, 44f), Center);
             hud.coinsIcon = coin.rectTransform;
             hud.coinsText = Text(body, "Coins", "Coins: 140", 28, Gold, TextAlignmentOptions.Left, false, matShadow);
-            Place(hud.coinsText.rectTransform, TopLeft, new Vector2(96f, -160f), new Vector2(440f, 40f), LeftMiddle);
+            Place(hud.coinsText.rectTransform, TopLeft, new Vector2(96f, -184f), new Vector2(440f, 40f), LeftMiddle);
 
             // Floor badge (top right)
             var badge = Panel(t, "FloorBadge", WithAlpha(PanelColor, 0.94f), out var badgeRoot);
@@ -577,7 +598,7 @@ namespace PixelStudy.EditorTools
             hud.floorText = Text(badge, "Floor", "FLOOR 3", 46, Gold, TextAlignmentOptions.Center, true, matShadow);
             hud.floorText.characterSpacing = 4;
             Place(hud.floorText.rectTransform, TopCenter, new Vector2(0f, -20f), new Vector2(240f, 54f), TopCenter);
-            hud.floorSubText = Text(badge, "Sub", "of 30", 22, DimText, TextAlignmentOptions.Center, true);
+            hud.floorSubText = Text(badge, "Sub", $"of {GameSession.FinalFloor}", 22, DimText, TextAlignmentOptions.Center, true);
             Place(hud.floorSubText.rectTransform, BottomCenter, new Vector2(0f, 18f), new Vector2(240f, 30f), BottomCenter);
             var bossIcon = Img(badge, "BossIcon", iSkull, Color.white);
             Place(bossIcon.rectTransform, TopLeft, new Vector2(-6f, 6f), new Vector2(52f, 52f), Center);
@@ -642,6 +663,89 @@ namespace PixelStudy.EditorTools
                 slotRoot.gameObject.SetActive(false);
             }
 
+            // Healing flask, after the skills (the arena knight fills it in; hidden otherwise)
+            {
+                var flaskBody = Panel(t, "Flask", WithAlpha(PanelColor, 0.95f), out var flaskRoot);
+                Place(flaskRoot, BottomLeft, new Vector2(34f + 7 * 108f + 22f, 60f), new Vector2(88f, 88f), BottomLeft);
+                var icon = Img(flaskBody, "Icon", null, Color.white);
+                icon.preserveAspect = true;
+                Place(icon.rectTransform, Center, new Vector2(0f, 2f), new Vector2(64f, 64f));
+                var count = Text(flaskBody, "Count", "3", 34, Parchment, TextAlignmentOptions.BottomRight, true, matTitle);
+                Stretch(count.rectTransform, 4f, 4f, 8f, 2f);
+                var keyBadge = Img(flaskRoot, "Key", sButton, Gold, true);
+                Place(keyBadge.rectTransform, TopLeft, new Vector2(4f, -2f), new Vector2(31f, 31f), Center);
+                var keyText = Text(keyBadge.transform, "Label", "R", 19, Hex("#2A1C08"), TextAlignmentOptions.Center, true);
+                Stretch(keyText.rectTransform, 2f, 2f, 2f, 6f);
+                var name = Text(flaskRoot, "Name", "FLASK", 12, Hex("#FF8A80"), TextAlignmentOptions.Bottom, true, matShadow);
+                name.characterSpacing = 1;
+                Place(name.rectTransform, TopCenter, new Vector2(0f, 17f), new Vector2(102f, 32f), BottomCenter);
+                hud.flaskRoot = flaskRoot.gameObject;
+                hud.flaskIcon = icon;
+                hud.flaskCountText = count;
+                hud.flaskKeyText = keyText;
+                flaskRoot.gameObject.SetActive(false);
+            }
+
+            // Ultimate, after the flask: a bigger slot whose gauge fills up behind the icon and glows when ready
+            {
+                const float size = 108f;
+                var ultBody = Panel(t, "Ultimate", WithAlpha(PanelColor, 0.97f), out var ultRoot);
+                Place(ultRoot, BottomLeft, new Vector2(34f + 7 * 108f + 22f + 88f + 34f, 50f), new Vector2(size, size), BottomLeft);
+                var fill = Img(ultBody, "Gauge", sWhite, new Color(1f, 0.78f, 0.3f, 0.38f));
+                Stretch(fill.rectTransform, 7f, 7f, 7f, 7f);
+                fill.type = Image.Type.Filled;
+                fill.fillMethod = Image.FillMethod.Vertical;
+                fill.fillOrigin = (int)Image.OriginVertical.Bottom;
+                fill.fillAmount = 0f;
+                var icon = Img(ultBody, "Icon", null, Color.white);
+                icon.preserveAspect = true;
+                Place(icon.rectTransform, Center, new Vector2(0f, 6f), new Vector2(76f, 76f));
+                var percent = Text(ultBody, "Charge", "0%", 20, Parchment, TextAlignmentOptions.Bottom, true, matTitle);
+                Stretch(percent.rectTransform, 2f, 2f, 2f, 6f);
+                var glow = Img(ultRoot, "Glow", sOutline, new Color(1f, 0.85f, 0.4f, 0f), true);
+                Stretch(glow.rectTransform, -6f, -6f, -6f, -6f);
+                var keyBadge = Img(ultRoot, "Key", sButton, Gold, true);
+                Place(keyBadge.rectTransform, TopLeft, new Vector2(4f, -2f), new Vector2(34f, 34f), Center);
+                var keyText = Text(keyBadge.transform, "Label", "G", 20, Hex("#2A1C08"), TextAlignmentOptions.Center, true);
+                Stretch(keyText.rectTransform, 2f, 2f, 2f, 6f);
+                var name = Text(ultRoot, "Name", "ULTIMATE", 13, Gold, TextAlignmentOptions.Bottom, true, matShadow);
+                name.characterSpacing = 2;
+                Place(name.rectTransform, TopCenter, new Vector2(0f, 17f), new Vector2(130f, 32f), BottomCenter);
+                hud.ultRoot = ultRoot.gameObject;
+                hud.ultFrame = ultBody.GetComponent<Image>();
+                hud.ultIcon = icon;
+                hud.ultFill = fill;
+                hud.ultGlow = glow;
+                hud.ultText = percent;
+                hud.ultKeyText = keyText;
+                hud.ultNameText = name;
+                ultRoot.gameObject.SetActive(false);
+            }
+
+            // Big death / victory banner across the middle (YOU DIED, ENEMY FELLED)
+            {
+                var banner = UI("Banner", t);
+                Stretch(Rect(banner));
+                var group = banner.AddComponent<CanvasGroup>();
+                group.blocksRaycasts = false;
+                group.interactable = false;
+                group.alpha = 0f;
+                var band = Img(banner.transform, "Band", sWhite, new Color(0f, 0f, 0f, 0.82f));
+                Place(band.rectTransform, Center, new Vector2(0f, 40f), new Vector2(4000f, 190f));
+                var edgeTop = Img(band.transform, "EdgeTop", sWhite, new Color(0f, 0f, 0f, 0.35f));
+                Place(edgeTop.rectTransform, TopCenter, new Vector2(0f, 26f), new Vector2(4000f, 26f), BottomCenter);
+                var edgeBottom = Img(band.transform, "EdgeBottom", sWhite, new Color(0f, 0f, 0f, 0.35f));
+                Place(edgeBottom.rectTransform, BottomCenter, new Vector2(0f, -26f), new Vector2(4000f, 26f), TopCenter);
+                var title = Text(banner.transform, "Title", "YOU DIED", 118, Hex("#C81E19"), TextAlignmentOptions.Center, false, matTitle);
+                title.characterSpacing = 14;
+                title.textWrappingMode = TextWrappingModes.NoWrap;
+                Place(title.rectTransform, Center, new Vector2(0f, 40f), new Vector2(1800f, 170f));
+                hud.bannerGroup = group;
+                hud.bannerText = title;
+                hud.bannerBand = band.rectTransform;
+                banner.SetActive(false);
+            }
+
             // Boss bar (top center, like Dead Cells)
             var boss = UI("BossBar", t);
             Place(Rect(boss), TopCenter, new Vector2(0f, -26f), new Vector2(700f, 92f), TopCenter);
@@ -659,8 +763,7 @@ namespace PixelStudy.EditorTools
             boss.SetActive(false);
 
             // Dev hint
-            var devKeys = "DEV KEYS    F5 finish floor   ·   F7 skip ahead 10 floors   ·   F8 victory   ·   Esc pause";
-            var dev = Text(t, "DevHint", devKeys, 18, WithAlpha(DimText, 0.85f), TextAlignmentOptions.Left, true, matShadow);
+            var dev = Text(t, "DevHint", "DEV KEYS    F5 finish floor   ·   F6 take damage   ·   F7 jump to boss floor   ·   F8 victory   ·   F9 clear bugs   ·   F10 unlock all skills   ·   Esc pause", 18, WithAlpha(DimText, 0.85f), TextAlignmentOptions.Left, true, matShadow);
             Place(dev.rectTransform, BottomLeft, new Vector2(24f, 14f), new Vector2(1400f, 28f), BottomLeft);
             c.devHint = dev.gameObject;
 
@@ -819,7 +922,7 @@ namespace PixelStudy.EditorTools
             c.pauseSettingsButton = Btn(stack.transform, "Settings", "Settings", Secondary, new Vector2(460f, 82f), 32, true);
             c.quitButton = Btn(stack.transform, "Quit", "Quit to Main Menu", Ghost, new Vector2(460f, 82f), 30, true);
 
-            c.pauseInfoText = Text(body, "Info", "Floor 3 of 30    ·    Normal", 22, DimText, TextAlignmentOptions.Center, true);
+            c.pauseInfoText = Text(body, "Info", $"Floor 3 of {GameSession.FinalFloor}    ·    Normal", 22, DimText, TextAlignmentOptions.Center, true);
             Place(c.pauseInfoText.rectTransform, BottomCenter, new Vector2(0f, 34f), new Vector2(560f, 30f), BottomCenter);
 
             c.pauseScreen = screen;
@@ -948,12 +1051,12 @@ namespace PixelStudy.EditorTools
             title.characterSpacing = 10;
             Stretch(title.rectTransform);
             titleGroup.AddComponent<UIFloat>().amplitude = 8f;
-            Sub(t, "You climbed all 30 floors of the tower.", new Vector2(0f, 196f), 32).color = Parchment;
+            Sub(t, "You climbed all 50 floors of the tower.", new Vector2(0f, 196f), 32).color = Parchment;
 
             var body = Panel(t, "Stats", PanelColor, out var root);
             Place(root, Center, new Vector2(0f, -4f), new Vector2(740f, 250f));
             VStack(body.gameObject, 10f, new RectOffset(40, 40, 28, 28), TextAnchor.MiddleCenter);
-            c.victoryFloorsText = StatRow(body, iShield, "Total floors cleared", "30", out _);
+            c.victoryFloorsText = StatRow(body, iShield, "Total floors cleared", "50", out _);
             c.victoryCoinsText = StatRow(body, iCoin, "Total coins earned", "412", out _);
             c.victoryCorrectText = StatRow(body, iCheck, "Total correct answers", "87", out _);
 
@@ -989,30 +1092,13 @@ namespace PixelStudy.EditorTools
         // Scene wiring
         // =====================================================================
 
-        static void AddGameUIToGameScene()
-        {
-            var scene = EditorSceneManager.OpenScene(GameScenePath, OpenSceneMode.Single);
-            foreach (var old in scene.GetRootGameObjects().Where(g => g.GetComponent<GameUIController>() != null).ToList())
-                Object.DestroyImmediate(old);
-
-            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
-            var instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab, scene);
-            instance.name = "GameUI";
-
-            if (!scene.GetRootGameObjects().Any(g => g.GetComponentInChildren<EventSystem>(true) != null))
-                MakeEventSystem();
-
-            EditorSceneManager.MarkSceneDirty(scene);
-            EditorSceneManager.SaveScene(scene);
-        }
-
-        /// <summary>MainMenu first, then the Arena (if it has been built), then the movement test scene.</summary>
+        /// <summary>MainMenu first, then every arena map and boss arena that has been built, then the group's SampleScene.</summary>
         public static void SetBuildScenes()
         {
-            const string arenaPath = "Assets/Scenes/Arena.unity";
-            var ours = File.Exists(arenaPath)
-                ? new[] { MainMenuScenePath, arenaPath, GameScenePath }
-                : new[] { MainMenuScenePath, GameScenePath };
+            var maps = GameSession.Maps.Concat(GameSession.BossMaps)
+                .Select(name => $"Assets/Scenes/{name}.unity")
+                .Where(File.Exists);
+            var ours = new[] { MainMenuScenePath }.Concat(maps).Concat(new[] { GameScenePath }).ToArray();
             var others = EditorBuildSettings.scenes.Where(s => !ours.Contains(s.path));
             EditorBuildSettings.scenes = ours.Select(p => new EditorBuildSettingsScene(p, true)).Concat(others).ToArray();
         }
@@ -1377,20 +1463,21 @@ namespace PixelStudy.EditorTools
         static void KeyChip(Transform parent, string key)
         {
             var go = UI("Key_" + key, parent);
-            Layout(go, Mathf.Max(64f, 30f + key.Length * 17f), 58f);
+            Layout(go, Mathf.Max(56f, 26f + key.Length * 15f), 46f);
             var img = go.AddComponent<Image>();
             img.sprite = sButton;
             img.type = Image.Type.Sliced;
             img.color = Hex("#D8CCF2");
             img.raycastTarget = false;
-            var t = Text(go.transform, "Label", key, 26, Ink, TextAlignmentOptions.Center, true);
-            Stretch(t.rectTransform, 6f, 2f, 6f, 10f);
+            var t = Text(go.transform, "Label", key, 22, Ink, TextAlignmentOptions.Center, true);
+            Stretch(t.rectTransform, 6f, 2f, 6f, 9f);
         }
 
         static void KeyWord(Transform parent, string word)
         {
-            var t = Text(parent, "Word_" + word, word, 24, DimText, TextAlignmentOptions.Center);
-            Layout(t.gameObject, 60f, 58f);
+            var t = Text(parent, "Word_" + word, word, 21, DimText, TextAlignmentOptions.Center);
+            t.textWrappingMode = TextWrappingModes.NoWrap;
+            Layout(t.gameObject, Mathf.Max(52f, word.Length * 10.5f + 8f), 46f);
         }
 
         static Slider PixelSlider(Transform parent, string name, float value)

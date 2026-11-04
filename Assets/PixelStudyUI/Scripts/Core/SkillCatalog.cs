@@ -4,8 +4,9 @@ using UnityEngine;
 namespace PixelStudy
 {
     /// <summary>
-    /// The knight's skills. Mockup 2 has no combat, so there are none: nothing shows on the HUD and a
-    /// perfect quiz never unlocks one. (The full game in Main_Dev lists them here.)
+    /// The knight's skills. Mockup 2's knight has the sword (M1) and one skill, Flame Slash, which he
+    /// starts with, so a perfect quiz never unlocks one. The other ids stay because Main_Dev's skill
+    /// scripts (still in the project, not on the knight) refer to them; Main_Dev lists all the skills.
     /// </summary>
     public static class SkillCatalog
     {
@@ -18,10 +19,22 @@ namespace PixelStudy
             public bool StartsUnlocked;
         }
 
+        public const string OverheadSlash = "overhead_slash";
+        public const string FlameSlash = "flame_slash";
+        public const string ThousandCuts = "thousand_cuts";
+        public const string ArcaneOrbs = "arcane_orbs";
+        public const string Thunder = "thunder";
+        public const string Thunderclap = "thunderclap";
+        public const string Riposte = "riposte";
+        public const string Heavenfall = "heavenfall";
+
         /// <summary>Chance that a perfect (3/3) quiz unlocks a random locked skill.</summary>
         public const float PerfectUnlockChance = 0f;
 
-        public static readonly Entry[] All = new Entry[0];
+        public static readonly Entry[] All =
+        {
+            new Entry { Id = FlameSlash, Name = "Flame Slash", Key = "Z", StartsUnlocked = true, Description = "Set your blade alight and swing it up: fire pours out in an arc and burns the floor ahead." },
+        };
 
         public static Entry Get(string id) => All.FirstOrDefault(e => e.Id == id);
 

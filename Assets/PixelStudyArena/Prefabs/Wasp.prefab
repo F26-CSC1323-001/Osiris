@@ -9,6 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4839970333149352999}
+  - component: {fileID: 5789278298520532896}
+  - component: {fileID: 2720192246435325277}
+  - component: {fileID: 8402005763665546813}
   - component: {fileID: 1759145475651901570}
   m_Layer: 11
   m_Name: Wasp
@@ -33,6 +36,83 @@ Transform:
   - {fileID: 7747953995609542750}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &5789278298520532896
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4814267816279652413}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!58 &2720192246435325277
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4814267816279652413}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 0.45
+--- !u!114 &8402005763665546813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4814267816279652413}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56caf5c72ab976840808963530d29a4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PixelStudy.Arena.SpriteFlash
+  renderers:
+  - {fileID: 8894116847099038738}
 --- !u!114 &1759145475651901570
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -45,11 +125,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 105a55541d2b17049a455696f1f450f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PixelStudy.Arena.WaspBug
+  maxHealth: 18
+  damage: 10
+  coinDrop: {x: 1, y: 3}
+  heartDropChance: 0.06
+  superArmor: 0
+  stance: 18
+  stanceRecoverDelay: 3
+  stanceBreakTime: 2.2
   visual: {fileID: 7747953995609542750}
   body: {fileID: 8894116847099038738}
   anim: {fileID: 2735185635973585880}
-  idleClip: idle
-  facing: -1
+  flash: {fileID: 8402005763665546813}
+  bloodColor: {r: 1, g: 0.85, b: 0.3, a: 1}
+  tint: {r: 1, g: 1, b: 1, a: 1}
+  centerHeight: 0
+  exclaimHeight: 0.9
+  flySpeed: 5
+  attackRange: 5
+  tellTime: 0.55
+  diveSpeed: 13
+  diveTime: 0.42
+  cooldown: 1.4
 --- !u!1 &6754643545953808198
 GameObject:
   m_ObjectHideFlags: 0
@@ -109,7 +206,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 80c608811b01d3042a287a64dfb0d198, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -157,7 +254,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PixelStudy.Arena.PixelAnimator
   target: {fileID: 8894116847099038738}
   clips:
-  - name: idle
+  - name: fly
     frames:
     - {fileID: 5563517627197732159, guid: 96a0819a85ac3d34b8e8b46172dfa8f4, type: 3}
     - {fileID: 414081882, guid: 96a0819a85ac3d34b8e8b46172dfa8f4, type: 3}

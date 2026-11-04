@@ -12,6 +12,24 @@ EditorBuildSettings:
     path: Assets/Scenes/Arena.unity
     guid: 05954a5a40e309d4eaa11051137e24cc
   - enabled: 1
+    path: Assets/Scenes/Arena_Crypt.unity
+    guid: 0ce5318ccb2ead94aa3b4828cd488e2f
+  - enabled: 1
+    path: Assets/Scenes/Arena_Ramparts.unity
+    guid: 3ef69158a881d5d4189253a57c23cc95
+  - enabled: 1
+    path: Assets/Scenes/Arena_Forge.unity
+    guid: 995d498e859f7d34b9a7b66aa6d3fb1f
+  - enabled: 1
+    path: Assets/Scenes/Boss_Nest.unity
+    guid: f7579d6699e40be4a974f5e4fd637d84
+  - enabled: 1
+    path: Assets/Scenes/Boss_Hive.unity
+    guid: 7ab5ae72e88ebeb42801173714d90805
+  - enabled: 1
+    path: Assets/Scenes/Boss_Crab.unity
+    guid: 110dd8c237413af42b08d8415ecf0636
+  - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   m_configObjects: {}

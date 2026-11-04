@@ -164,7 +164,9 @@ namespace PixelStudy.UI
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (eventData.button == PointerEventData.InputButton.Left && Interactable) pressed = true;
+            if (eventData.button != PointerEventData.InputButton.Left || !Interactable) return;
+            pressed = true;
+            Sfx.Play("click", 0.5f);
         }
 
         public void OnPointerUp(PointerEventData eventData) => pressed = false;

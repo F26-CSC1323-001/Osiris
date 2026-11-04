@@ -3,9 +3,13 @@ using UnityEngine;
 namespace PixelStudy.Arena
 {
     /// <summary>
-    /// Mockup 2 controls (old Input Manager). Keyboard, with basic gamepad support. Movement only.
-    ///   Move: A/D or arrows   Jump: Space / W / Up
+    /// Arena controls (old Input Manager). Keyboard + mouse, with basic gamepad support.
+    ///   Move: A/D or arrows   Jump: Space / W / Up (press again in the air to double jump)
     ///   Drop through a platform: S/Down + Jump
+    ///   Attack: J or Left Mouse (tap = slash, hold = heavy stab)
+    ///   Dodge roll: Left Shift or L (no direction held = backstep)     Shield: K or Right Mouse (hold)
+    ///   Heal (crimson flask): R
+    ///   Skills: Q Z X C V E F   Ultimate (Heavenfall, when its gauge is full): G
     /// </summary>
     public static class ArenaInput
     {
@@ -35,5 +39,20 @@ namespace PixelStudy.Arena
         public static bool JumpHeld =>
             Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow) ||
             Input.GetKey(KeyCode.JoystickButton0);
+
+        public static bool AttackDown =>
+            Input.GetKeyDown(KeyCode.J) || Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.JoystickButton2);
+
+        public static bool AttackHeld =>
+            Input.GetKey(KeyCode.J) || Input.GetMouseButton(0) || Input.GetKey(KeyCode.JoystickButton2);
+
+        public static bool DodgeDown =>
+            Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.L) || Input.GetKeyDown(KeyCode.JoystickButton1);
+
+        public static bool FlaskDown =>
+            Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.JoystickButton6);
+
+        public static bool BlockHeld =>
+            Input.GetKey(KeyCode.K) || Input.GetMouseButton(1) || Input.GetKey(KeyCode.JoystickButton4) || Input.GetKey(KeyCode.JoystickButton5);
     }
 }

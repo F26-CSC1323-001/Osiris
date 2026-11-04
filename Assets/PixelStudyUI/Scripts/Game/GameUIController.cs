@@ -150,8 +150,17 @@ namespace PixelStudy.Game
             if (devHotkeys && Debug.isDebugBuild && !AnyModalOpen)
             {
                 if (Input.GetKeyDown(KeyCode.F5)) CompleteFloor();
+                if (Input.GetKeyDown(KeyCode.F6)) DamagePlayer(20);
                 if (Input.GetKeyDown(KeyCode.F7)) JumpToNextBossFloor();
                 if (Input.GetKeyDown(KeyCode.F8)) ShowVictory();
+                if (Input.GetKeyDown(KeyCode.F10))
+                {
+                    SkillCatalog.UnlockAll(Run);
+                    Run.ultCharge = 1f;
+                    GameSession.NotifyChanged();
+                    GameSession.Save();
+                    ShowToast("Dev: all skills unlocked, ultimate charged");
+                }
             }
 
             // Freeze gameplay while any popup is open.
@@ -209,10 +218,12 @@ namespace PixelStudy.Game
 
         IEnumerator GameOverAfterDelay()
         {
-            // Let the death animation play before the menu pauses everything.
-            yield return new WaitForSecondsRealtime(quiz.IsOpen ? 0f : 1.2f);
+            // Let the death animation and the YOU DIED banner play before the menu pauses everything.
+            if (!quiz.IsOpen) hud.ShowBanner("YOU DIED", new Color(0.78f, 0.12f, 0.1f), 0f);
+            yield return new WaitForSecondsRealtime(quiz.IsOpen ? 0f : 2.8f);
             gameOverRoutine = null;
             if (Run.health <= 0) ShowGameOver();
+            else hud.HideBanner();
         }
 
         public void ShowToast(string message)
@@ -306,6 +317,7 @@ namespace PixelStudy.Game
             if (pendingSkill != null) floorSkillText.text = pendingSkill;
             floorContinueLabel.text = $"Continue to Floor {Run.floor + 1}";
             floorClearedScreen.Show();
+            Sfx.Play("clear", 0.6f, 1f, 0f);
         }
 
         void OnFloorContinue()
@@ -318,21 +330,22 @@ namespace PixelStudy.Game
         void AdvanceFloor()
         {
             Run.floor++;
+            if (!GameSession.IsBossFloor(Run.floor)) GameSession.PickMap(); // a new random map every floor
             GameSession.Save();
-            if (GameSession.IsBossFloor(Run.floor)) GameSession.PendingMessage = $"Floor {Run.floor}: a boss waits at the end of this floor.";
+            if (GameSession.IsBossFloor(Run.floor)) GameSession.PendingMessage = $"Floor {Run.floor}: {GameSession.BossName(Run.floor)} waits in its lair.";
             ReloadFloor();
         }
 
-        /// <summary>Restarts the current floor. Replace with your own level loading when it exists.</summary>
+        /// <summary>Loads the current floor: the same map again on a retry, the next one after advancing.</summary>
         void ReloadFloor()
         {
-            Time.timeScale = 1f;
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            GameSession.LoadGame();
         }
 
         void ShowGameOver()
         {
             if (gameOverScreen.IsOpen) return;
+            hud.HideBanner();
             gameOverFloorText.text = Run.floor.ToString();
             gameOverCorrectText.text = Run.correctAnswers.ToString();
             gameOverCoinsText.text = Run.coins.ToString();
@@ -380,6 +393,7 @@ namespace PixelStudy.Game
             victoryCoinsText.text = Run.totalCoinsEarned.ToString();
             victoryCorrectText.text = Run.correctAnswers.ToString();
             victoryScreen.Show();
+            Sfx.Play("clear", 0.8f, 0.9f, 0f);
         }
 
         void JumpToNextBossFloor()

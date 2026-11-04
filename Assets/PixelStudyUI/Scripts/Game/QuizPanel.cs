@@ -117,6 +117,7 @@ namespace PixelStudy.Game
             var q = questions[index];
             bool right = choice == q.correctIndex;
             if (right) correctCount++;
+            Sfx.Play(right ? "correct" : "wrong", 0.6f, 1f, 0f);
 
             Hover(q.correctIndex)?.SetOverrideColor(correctColor);
             if (!right)

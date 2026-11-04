@@ -22,9 +22,15 @@ namespace PixelStudy
         public int floorsCleared;
         public int attackBonusPercent;
         public int dodgeBonusPercent;
+        /// <summary>Run speed bonus from Swift Boots (Mockup 2's knight has no roll for a dodge bonus).</summary>
+        public int speedBonusPercent;
         public int newGamePlus;
         /// <summary>Skills unlocked during the run (the starting skills aren't listed). See SkillCatalog.</summary>
         public List<string> unlockedSkills = new List<string>();
+        /// <summary>Scene of the map this (normal) floor is played on. Picked at random each floor.</summary>
+        public string map;
+        /// <summary>The ultimate's gauge, 0..1 (carries over between floors).</summary>
+        public float ultCharge;
     }
 
     /// <summary>
@@ -35,16 +41,24 @@ namespace PixelStudy
     public static class GameSession
     {
         public const string MainMenuScene = "MainMenu";
-        // The scene each floor is played in. (SampleScene is still there as the movement test scene.)
+        // The default arena (SampleScene is the group's own test scene).
         public const string GameScene = "Arena";
 
+        /// <summary>Maps for normal floors; each floor picks one at random (never the same one twice in a row).</summary>
+        public static readonly string[] Maps = { "Arena", "Arena_Crypt", "Arena_Ramparts", "Arena_Forge" };
+
+        /// <summary>Each boss fights in its own arena (same order as BossNames).</summary>
+        public static readonly string[] BossMaps = { "Boss_Nest", "Boss_Hive", "Boss_Crab" };
+
+        // Mockup 2: 30 floors, a boss on 10, 20 and 30.
         public const int FinalFloor = 30;
         public const int BossEvery = 10;
         public const int ContinueCost = 25;
         public const int QuestionsPerFloor = 3;
         public const int CoinsPerCorrectAnswer = 6;
 
-        const string SaveKey = "PixelStudy.Save";
+        // Its own save slot: Main_Dev uses the same product name, so they would share PlayerPrefs otherwise.
+        const string SaveKey = "PixelStudy.Mockup2.Save";
         const string DifficultyKey = "PixelStudy.Difficulty";
 
         public static RunData Run { get; private set; }
@@ -78,15 +92,12 @@ namespace PixelStudy
 
         public static float EnemyDamageMultiplier() => Run == null ? 1f : EnemyDamageMultiplier(Run.difficulty);
 
-        /// <summary>Mockup 2 has no bosses: every floor is beetles and wasps. Set to true to bring them back.</summary>
-        public static readonly bool BossesEnabled = false;
+        public static bool IsBossFloor(int floor) => floor % BossEvery == 0;
 
-        public static bool IsBossFloor(int floor) => BossesEnabled && floor % BossEvery == 0;
+        /// <summary>Bosses in order: floor 10, 20 and the final boss on 30 (the group's Obsidian Crab). Each fights in its own arena.</summary>
+        public static readonly string[] BossNames = { "The Brood Mother", "The Hornet Queen", "The Obsidian Crab" };
 
-        /// <summary>Bosses in order: floor 10, 20, 30 (then repeating). The arena spawns the matching one.</summary>
-        public static readonly string[] BossNames = { "The Brood Mother", "The Hornet Queen", "The Reaper Mantis" };
-
-        /// <summary>0 = Brood Mother, 1 = Hornet Queen, 2 = Reaper Mantis.</summary>
+        /// <summary>0 Brood Mother, 1 Hornet Queen, 2 Obsidian Crab.</summary>
         public static int BossIndex(int floor) => Mathf.Max(0, floor / BossEvery - 1) % BossNames.Length;
 
         public static string BossName(int floor) => BossNames[BossIndex(floor)];
@@ -103,8 +114,25 @@ namespace PixelStudy
         public static void StartNewRun(Difficulty difficulty)
         {
             Run = new RunData { difficulty = difficulty };
+            PickMap();
             Save();
             NotifyChanged();
+        }
+
+        /// <summary>Picks the map for the current floor (a different one from last floor).</summary>
+        public static void PickMap()
+        {
+            if (Run == null) return;
+            var choices = Array.FindAll(Maps, m => m != Run.map);
+            Run.map = choices[UnityEngine.Random.Range(0, choices.Length)];
+        }
+
+        /// <summary>The scene the current floor is played in: the boss's own arena, or this floor's map.</summary>
+        public static string SceneForFloor(RunData run)
+        {
+            if (run == null) return GameScene;
+            if (IsBossFloor(run.floor)) return BossMaps[BossIndex(run.floor) % BossMaps.Length];
+            return string.IsNullOrEmpty(run.map) || Array.IndexOf(Maps, run.map) < 0 ? GameScene : run.map;
         }
 
         /// <summary>New Game+: keeps upgrades, coins and tokens, starts again from floor 1.</summary>
@@ -121,8 +149,10 @@ namespace PixelStudy
                 health = old.maxHealth,
                 attackBonusPercent = old.attackBonusPercent,
                 dodgeBonusPercent = old.dodgeBonusPercent,
+                speedBonusPercent = old.speedBonusPercent,
                 unlockedSkills = new List<string>(old.unlockedSkills ?? new List<string>()),
             };
+            PickMap();
             Save();
             NotifyChanged();
         }
@@ -188,10 +218,12 @@ namespace PixelStudy
             SceneManager.LoadScene(MainMenuScene);
         }
 
+        /// <summary>Loads the current floor (its random map, or the boss's arena on boss floors).</summary>
         public static void LoadGame()
         {
             Time.timeScale = 1f;
-            SceneManager.LoadScene(GameScene);
+            EnsureRun();
+            SceneManager.LoadScene(SceneForFloor(Run));
         }
     }
 }

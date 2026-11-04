@@ -21,7 +21,7 @@ namespace PixelStudy
 
         static readonly int[] AttackPercent = { 0, 4, 7, 10 };
         static readonly int[] MaxHealth = { 0, 5, 10, 15 };
-        static readonly int[] DodgePercent = { 0, 3, 5, 8 };
+        static readonly int[] SpeedPercent = { 0, 3, 5, 8 };
 
         public static readonly Upgrade[] All =
         {
@@ -42,9 +42,9 @@ namespace PixelStudy
             new Upgrade
             {
                 Name = "Swift Boots",
-                Describe = tier => $"+{DodgePercent[Clamp(tier)]}% dodge distance",
-                Apply = (run, tier) => run.dodgeBonusPercent += DodgePercent[Clamp(tier)],
-                Current = run => $"Dodge bonus: +{run.dodgeBonusPercent}%",
+                Describe = tier => $"+{SpeedPercent[Clamp(tier)]}% run speed",
+                Apply = (run, tier) => run.speedBonusPercent += SpeedPercent[Clamp(tier)],
+                Current = run => $"Speed bonus: +{run.speedBonusPercent}%",
             },
         };
 

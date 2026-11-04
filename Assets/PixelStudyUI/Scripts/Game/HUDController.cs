@@ -21,11 +21,23 @@ namespace PixelStudy.Game
         [System.NonSerialized] public bool locked;
     }
 
-    /// <summary>Health, tokens, coins, floor and boss bar. Refreshes itself when GameSession changes.</summary>
+    /// <summary>Health, stamina, flasks, tokens, coins, floor and boss bar. Refreshes itself when GameSession changes.</summary>
     public class HUDController : MonoBehaviour
     {
         public UIBar healthBar;
         public TMP_Text healthText;
+        public UIBar staminaBar;
+
+        [Header("Flask")]
+        public GameObject flaskRoot;
+        public UnityEngine.UI.Image flaskIcon;
+        public TMP_Text flaskCountText;
+        public TMP_Text flaskKeyText;
+
+        [Header("Banner (YOU DIED / ENEMY FELLED)")]
+        public CanvasGroup bannerGroup;
+        public TMP_Text bannerText;
+        public RectTransform bannerBand;
         public TMP_Text tokensText;
         public TMP_Text coinsText;
         public TMP_Text floorText;
@@ -47,6 +59,20 @@ namespace PixelStudy.Game
         [Header("Skills")]
         public SkillSlotView[] skillSlots;
         public Color skillReadyFlash = new Color(1f, 0.8f, 0.35f);
+
+        [Header("Ultimate (after the skills and the flask)")]
+        public GameObject ultRoot;
+        public UnityEngine.UI.Image ultFrame;
+        public UnityEngine.UI.Image ultIcon;
+        [Tooltip("Gauge filling up behind the icon.")]
+        public UnityEngine.UI.Image ultFill;
+        [Tooltip("Gold outline that pulses while the ultimate is ready.")]
+        public UnityEngine.UI.Image ultGlow;
+        public TMP_Text ultText;
+        public TMP_Text ultKeyText;
+        public TMP_Text ultNameText;
+        bool ultReady;
+        float shownCharge = -1f;
 
         int lastCoins = -1, lastTokens = -1, lastHealth = -1;
 
@@ -81,13 +107,15 @@ namespace PixelStudy.Game
             lastHealth = run.health;
         }
 
-        public void SetBoss(bool visible, float normalized, bool instant = false)
+        /// <summary>The big health bar at the top. name: what to call it (default: this floor's boss).</summary>
+        public void SetBoss(bool visible, float normalized, bool instant = false, string name = null)
         {
             bossGroup.SetActive(visible);
             if (!visible) return;
             bossBar.SetValue(normalized, instant);
-            if (bossNameText != null && GameSession.Run != null)
-                bossNameText.text = GameSession.BossName(GameSession.Run.floor).ToUpperInvariant();
+            if (bossNameText == null) return;
+            if (!string.IsNullOrEmpty(name)) bossNameText.text = name.ToUpperInvariant();
+            else if (GameSession.Run != null) bossNameText.text = GameSession.BossName(GameSession.Run.floor).ToUpperInvariant();
         }
 
         /// <summary>
@@ -141,8 +169,51 @@ namespace PixelStudy.Game
         /// <summary>Little shake when the player presses a skill that is still cooling down.</summary>
         public void DenySkill(int index)
         {
-            if (skillSlots == null || index < 0 || index >= skillSlots.Length || !isActiveAndEnabled) return;
-            StartCoroutine(Shake((RectTransform)skillSlots[index].root.transform));
+            if (skillSlots == null || index < 0 || !isActiveAndEnabled) return;
+            // the knight's skill after the seven slots is the ultimate
+            var target = index < skillSlots.Length ? skillSlots[index].root : ultRoot;
+            if (target != null && target.activeInHierarchy) StartCoroutine(Shake((RectTransform)target.transform));
+        }
+
+        // ---------- ultimate ----------
+
+        /// <summary>Shows the ultimate's slot (icon, key, name). A null icon hides it.</summary>
+        public void SetUltimate(Sprite icon, string key, string displayName)
+        {
+            if (ultRoot == null) return;
+            ultRoot.SetActive(icon != null);
+            if (icon == null) return;
+            ultIcon.sprite = icon;
+            if (ultKeyText != null) ultKeyText.text = key;
+            if (ultNameText != null) ultNameText.text = displayName.ToUpperInvariant();
+            shownCharge = -1f;
+        }
+
+        /// <summary>The gauge, 0..1. Full: the slot lights up and pulses until it's used.</summary>
+        public void SetUltimateCharge(float charge01)
+        {
+            if (ultRoot == null || !ultRoot.activeSelf) return;
+            charge01 = Mathf.Clamp01(charge01);
+            bool ready = charge01 >= 1f;
+            if (Mathf.Approximately(charge01, shownCharge) && ready == ultReady) return;
+            shownCharge = charge01;
+            ultFill.fillAmount = charge01;
+            ultText.text = ready ? "READY" : Mathf.FloorToInt(charge01 * 100f) + "%";
+            ultIcon.color = ready ? Color.white : Color.Lerp(new Color(0.3f, 0.3f, 0.36f), new Color(0.75f, 0.72f, 0.65f), charge01);
+            if (ready && !ultReady && isActiveAndEnabled) Punch((RectTransform)ultRoot.transform, 0.45f);
+            ultReady = ready;
+            if (ready) return;
+            if (ultGlow != null) ultGlow.color = new Color(1f, 0.85f, 0.4f, 0f);
+            ultText.color = new Color(0.95f, 0.9f, 0.8f);
+        }
+
+        void Update()
+        {
+            if (!ultReady || ultGlow == null || ultRoot == null || !ultRoot.activeSelf) return;
+            // ready: the outline breathes gold
+            float t = Time.unscaledTime;
+            ultGlow.color = new Color(1f, 0.85f, 0.4f, 0.45f + 0.4f * Mathf.Sin(t * 5f));
+            if (ultText != null) ultText.color = Color.Lerp(new Color(1f, 0.85f, 0.4f), Color.white, 0.5f + 0.5f * Mathf.Sin(t * 5f));
         }
 
         IEnumerator FlashFrame(SkillSlotView s)
@@ -165,6 +236,84 @@ namespace PixelStudy.Game
                 yield return null;
             }
             target.anchoredPosition = start;
+        }
+
+        // ---------- stamina ----------
+
+        public void SetStamina(float normalized, bool instant = false)
+        {
+            if (staminaBar != null) staminaBar.SetValue(normalized, instant);
+        }
+
+        /// <summary>Tried to act with no stamina left: the bar shakes.</summary>
+        public void DenyStamina()
+        {
+            if (staminaBar != null && isActiveAndEnabled) StartCoroutine(Shake((RectTransform)staminaBar.transform));
+        }
+
+        // ---------- flask ----------
+
+        /// <summary>Shows the healing flask with how many sips are left. A null icon hides it.</summary>
+        public void SetFlask(Sprite icon, int charges, string key)
+        {
+            if (flaskRoot == null) return;
+            flaskRoot.SetActive(icon != null);
+            if (icon == null) return;
+            flaskIcon.sprite = icon;
+            flaskIcon.color = charges > 0 ? Color.white : new Color(0.3f, 0.3f, 0.36f);
+            flaskCountText.text = charges.ToString();
+            flaskCountText.color = charges > 0 ? new Color(1f, 0.95f, 0.85f) : new Color(1f, 0.45f, 0.4f);
+            if (flaskKeyText != null) flaskKeyText.text = key;
+        }
+
+        public void FlaskUsed()
+        {
+            if (flaskRoot != null) Punch((RectTransform)flaskRoot.transform, 0.3f);
+        }
+
+        public void DenyFlask()
+        {
+            if (flaskRoot != null && isActiveAndEnabled) StartCoroutine(Shake((RectTransform)flaskRoot.transform));
+        }
+
+        // ---------- banner ----------
+
+        Coroutine bannerRoutine;
+
+        /// <summary>Big centered title across a dark band ("YOU DIED", "ENEMY FELLED"). seconds &lt;= 0 keeps it up.</summary>
+        public void ShowBanner(string text, Color color, float seconds)
+        {
+            if (bannerGroup == null || !isActiveAndEnabled) return;
+            if (bannerRoutine != null) StopCoroutine(bannerRoutine);
+            bannerRoutine = StartCoroutine(BannerRoutine(text, color, seconds));
+        }
+
+        public void HideBanner()
+        {
+            if (bannerRoutine != null) StopCoroutine(bannerRoutine);
+            bannerRoutine = null;
+            if (bannerGroup != null) bannerGroup.gameObject.SetActive(false);
+        }
+
+        IEnumerator BannerRoutine(string text, Color color, float seconds)
+        {
+            bannerGroup.gameObject.SetActive(true);
+            bannerText.text = text;
+            bannerText.color = color;
+            const float fadeIn = 0.9f, fadeOut = 0.8f;
+            float total = seconds > 0f ? seconds : float.PositiveInfinity;
+            for (float t = 0f; t < total; t += Time.unscaledDeltaTime)
+            {
+                float a = Mathf.Clamp01(t / fadeIn);
+                if (seconds > 0f && t > seconds - fadeOut) a = Mathf.Clamp01((seconds - t) / fadeOut);
+                bannerGroup.alpha = a * a * (3f - 2f * a);
+                // the title slowly grows, the band opens up
+                bannerText.rectTransform.localScale = Vector3.one * (1f + 0.08f * Mathf.Clamp01(t / 3f));
+                if (bannerBand != null) bannerBand.localScale = new Vector3(1f, Mathf.Lerp(0.6f, 1f, Mathf.Clamp01(t / 0.5f)), 1f);
+                yield return null;
+            }
+            bannerGroup.gameObject.SetActive(false);
+            bannerRoutine = null;
         }
 
         /// <summary>Small line under the floor badge ("BUGS LEFT: 4", "EXIT OPEN"). Empty hides it.</summary>

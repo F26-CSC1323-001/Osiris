@@ -395,6 +395,112 @@ namespace PixelStudy.EditorTools
             return p;
         }
 
+        /// <summary>Sky Ramparts: a sunset. Purple overhead, orange at the horizon, the sun sinking behind castles.</summary>
+        static Px SkyDusk()
+        {
+            const int w = 480, h = 270;
+            var p = new Px(w, h);
+            var top = Hex("#160C2A");
+            var mid = Hex("#6A2552");
+            var low = Hex("#E0743A");
+            for (int y = 0; y < h; y++)
+            {
+                float t = y / (float)h;
+                int band = Mathf.FloorToInt(t * 16f);
+                float k = band / 16f;
+                var c = k < 0.45f ? Mix(low, mid, k / 0.45f) : Mix(mid, top, (k - 0.45f) / 0.55f);
+                for (int x = 0; x < w; x++) p.Set(x, y, c);
+            }
+            for (int i = 0; i < 70; i++)
+                p.Blend((int)(Hash(i, 0, 31) * w), 170 + (int)(Hash(i, 1, 31) * 100), new Color32(255, 230, 240, (byte)(60 + Hash(i, 2, 31) * 120)));
+            // the setting sun and its glow
+            int sx = 150, sy = 92;
+            for (int r = 90; r > 34; r -= 8) p.Ellipse(sx, sy, r, r, (nx, ny) => new Color32(255, 170, 90, 14), true);
+            p.Ellipse(sx, sy, 34, 34, (nx, ny) => ny > 0.3f ? Hex("#FFE3A0") : ny > -0.2f ? Hex("#FFC46B") : Hex("#FF9C4A"));
+            // streaks of cloud across it
+            for (int y = 60; y < 200; y++)
+            for (int x = 0; x < w; x++)
+            {
+                float n = Mathf.PerlinNoise(x * 0.012f, y * 0.09f);
+                if (n > 0.62f) p.Blend(x, y, new Color32(255, 150, 160, (byte)((n - 0.62f) * 300f)));
+            }
+            // castle silhouettes
+            var far = Hex("#2A1230");
+            var lit = Hex("#FFD27A");
+            for (int x = 0; x < w; x++)
+            {
+                int hgt = 64 + (int)(Mathf.PerlinNoise(x * 0.02f, 7.7f) * 26f);
+                for (int y = 0; y < hgt; y++) p.Set(x, y, far);
+            }
+            for (int i = 0; i < 8; i++)
+            {
+                int tx = 30 + i * 58 + (int)(Hash(i, 0, 32) * 18f);
+                int tw = 10 + (int)(Hash(i, 1, 32) * 12f);
+                int th = 100 + (int)(Hash(i, 2, 32) * 60f);
+                p.Rect(tx, 0, tw, th, far);
+                for (int k = 0; k < tw; k += 3) p.Rect(tx + k, th, 2, 4, far); // crenellations
+                for (int k = 0; k < 3; k++)
+                    if (Hash(i, k + 3, 32) < 0.7f) p.Rect(tx + 3 + (int)(Hash(i, k, 33) * (tw - 6)), th - 18 - k * 20, 2, 3, lit);
+            }
+            return p;
+        }
+
+        /// <summary>Moonlit Shrine: a deep blue night with a huge moon over layered mountains.</summary>
+        static Px SkyMoon()
+        {
+            const int w = 480, h = 270;
+            var p = new Px(w, h);
+            var top = Hex("#03050D");
+            var low = Hex("#1A2650");
+            for (int y = 0; y < h; y++)
+            {
+                int band = Mathf.FloorToInt(Mathf.Pow(y / (float)h, 0.8f) * 14f);
+                var c = Mix(low, top, band / 14f);
+                for (int x = 0; x < w; x++) p.Set(x, y, c);
+            }
+            for (int i = 0; i < 220; i++)
+                p.Blend((int)(Hash(i, 0, 41) * w), 90 + (int)(Hash(i, 1, 41) * 180), new Color32(220, 230, 255, (byte)(80 + Hash(i, 2, 41) * 175)));
+            // the moon
+            int mx = 300, my = 175;
+            for (int r = 100; r > 48; r -= 6) p.Ellipse(mx, my, r, r, (nx, ny) => new Color32(150, 170, 230, 10), true);
+            p.Ellipse(mx, my, 48, 48, (nx, ny) =>
+            {
+                var c = Hex("#EEF1FA");
+                if (-nx * 0.5f + ny * 0.6f < -0.45f) c = Hex("#C9D0E6");
+                return c;
+            });
+            foreach (var (cx, cy, r) in new[] { (-14, 10, 7), (12, -8, 9), (18, 16, 4), (-6, -20, 5), (-24, -4, 4) })
+                p.Ellipse(mx + cx, my + cy, r, r * 0.85f, (a, b) => Hex("#D3D9EC"));
+            // layered mountains with a pagoda on the near ridge
+            var farHill = Hex("#0F1834");
+            var nearHill = Hex("#080D20");
+            for (int x = 0; x < w; x++)
+            {
+                int h1 = 70 + (int)(Mathf.PerlinNoise(x * 0.01f, 2.1f) * 70f);
+                for (int y = 0; y < h1; y++) p.Set(x, y, farHill);
+                int h2 = 40 + (int)(Mathf.PerlinNoise(x * 0.018f, 5.3f) * 40f);
+                for (int y = 0; y < h2; y++) p.Set(x, y, nearHill);
+            }
+            int px = 110;
+            int baseY = 40 + (int)(Mathf.PerlinNoise(px * 0.018f, 5.3f) * 40f);
+            for (int tier = 0; tier < 4; tier++)
+            {
+                int ty = baseY + tier * 12, half = 16 - tier * 3;
+                p.Rect(px - half / 2, ty, half, 9, nearHill);
+                for (int k = -half; k <= half; k++) p.Set(px + k, ty + 9 + (Mathf.Abs(k) > half - 3 ? 1 : 0), nearHill);
+                p.Rect(px - 1, ty + 3, 2, 2, Hex("#FFB86B"));
+            }
+            p.Rect(px, baseY + 48, 1, 8, nearHill);
+            // mist in front of the hills
+            for (int y = 20; y < 90; y++)
+            for (int x = 0; x < w; x++)
+            {
+                float m = Mathf.PerlinNoise(x * 0.014f, y * 0.06f) * (1f - Mathf.Abs(y - 55) / 35f);
+                if (m > 0.25f) p.Blend(x, y, new Color32(110, 130, 200, (byte)(m * 60)));
+            }
+            return p;
+        }
+
         static Px MidRuins()
         {
             const int w = 480, h = 200;
@@ -481,6 +587,240 @@ namespace PixelStudy.EditorTools
                 frames[f] = p;
             }
             return frames;
+        }
+
+        // ---------- map props ----------
+
+        /// <summary>Sunken Crypt: a stone sarcophagus (pivot bottom middle).</summary>
+        static Px Tomb()
+        {
+            var p = new Px(48, 22);
+            var stone = Hex("#5B6A6E");
+            var light = Hex("#7C8E90");
+            var dark = Hex("#3B4648");
+            p.Rect(2, 0, 44, 14, stone);
+            p.Rect(2, 12, 44, 2, light);
+            p.Rect(0, 14, 48, 6, light);   // lid
+            p.Rect(0, 14, 48, 1, dark);
+            p.Rect(1, 19, 46, 2, Hex("#9FB1B2"));
+            for (int x = 4; x < 44; x += 8) p.Rect(x, 2, 4, 8, dark); // carved panels
+            // a carved cross on the lid end
+            p.Rect(22, 15, 4, 4, dark);
+            p.Rect(23, 15, 2, 6, dark);
+            // moss
+            for (int x = 0; x < 48; x++) if (Hash(x, 0, 50) < 0.35f) p.Set(x, 21, Hex("#3F6934"));
+            p.Outline(Ink);
+            return p;
+        }
+
+        /// <summary>A cobweb in a corner (anchored at the top-left; mirror it for the right side).</summary>
+        static Px Web()
+        {
+            var p = new Px(40, 40);
+            var thread = new Color32(220, 225, 235, 150);
+            var faint = new Color32(220, 225, 235, 80);
+            for (int i = 0; i <= 6; i++)
+            {
+                float a = -90f + i * 15f;
+                var d = new Vector2(Mathf.Cos(a * Mathf.Deg2Rad), Mathf.Sin(a * Mathf.Deg2Rad));
+                p.Line(0, 39, d.x * 40f, 39 + d.y * 40f, thread);
+            }
+            for (int ring = 1; ring <= 5; ring++)
+            {
+                float r = ring * 7.5f;
+                for (int i = 0; i < 6; i++)
+                {
+                    float a0 = (-90f + i * 15f) * Mathf.Deg2Rad, a1 = (-90f + (i + 1) * 15f) * Mathf.Deg2Rad;
+                    float sag = 1.5f;
+                    var m = new Vector2(Mathf.Cos((a0 + a1) * 0.5f), Mathf.Sin((a0 + a1) * 0.5f)) * (r - sag);
+                    p.Line(Mathf.Cos(a0) * r, 39 + Mathf.Sin(a0) * r, m.x, 39 + m.y, faint);
+                    p.Line(m.x, 39 + m.y, Mathf.Cos(a1) * r, 39 + Mathf.Sin(a1) * r, faint);
+                }
+            }
+            return p;
+        }
+
+        /// <summary>The Brood Mother's eggs: a slimy clutch with glowing yolks (pivot bottom middle).</summary>
+        static Px EggCluster()
+        {
+            var p = new Px(44, 26);
+            // slime base
+            p.Ellipse(22f, 2f, 21f, 3f, (nx, ny) => Hex("#3D6B2E"));
+            var eggs = new[] { (9f, 9f, 6f, 8f), (21f, 11f, 7f, 10f), (33f, 9f, 6f, 8f), (15f, 6f, 5f, 6f), (28f, 6f, 5f, 6f) };
+            foreach (var (cx, cy, rx, ry) in eggs)
+                p.Ellipse(cx, cy, rx, ry, (nx, ny) =>
+                {
+                    float d = Mathf.Sqrt(nx * nx + ny * ny);
+                    if (d < 0.35f) return Hex("#E9FF9A");                          // glowing yolk
+                    if (-nx * 0.5f + ny * 0.7f > 0.55f) return Hex("#D7F5C0");     // shine
+                    if (d < 0.75f) return Hex("#9BD46A", 235);
+                    return Hex("#5F9A45", 235);
+                });
+            p.Outline(Hex("#1A2A12"));
+            return p;
+        }
+
+        /// <summary>Hive wall: a patch of honeycomb, most cells full of honey.</summary>
+        static Px Honeycomb()
+        {
+            var p = new Px(72, 60);
+            const float r = 6f;
+            float hw = r * Mathf.Sqrt(3f);
+            for (int row = -1; row < 8; row++)
+            for (int col = -1; col < 7; col++)
+            {
+                float cx = col * hw + (row % 2 == 0 ? 0f : hw * 0.5f) + 4f;
+                float cy = row * r * 1.5f + 4f;
+                bool full = Hash(row, col, 60) < 0.7f;
+                for (int y = (int)(cy - r - 1); y <= cy + r + 1; y++)
+                for (int x = (int)(cx - hw); x <= cx + hw; x++)
+                {
+                    float dx = Mathf.Abs(x + 0.5f - cx), dy = Mathf.Abs(y + 0.5f - cy);
+                    // hexagon (pointy top) distance
+                    float hex = Mathf.Max(dx * 0.866f + dy * 0.5f, dy);
+                    if (hex > r) continue;
+                    // a rounded, ragged patch: cells crumble away toward its edge
+                    float ex = (x + 0.5f - 36f) / 36f, ey = (y + 0.5f - 30f) / 30f;
+                    float edge = (1f - Mathf.Sqrt(ex * ex + ey * ey)) * 3.2f + (Hash(row, col, 62) - 0.5f) * 0.8f;
+                    if (edge < 0.15f || Hash(x, y, 61) > edge) continue;
+                    Color32 c;
+                    if (hex > r - 1.4f) c = Hex("#C9862A");                              // wax walls
+                    else if (full) c = hex < r * 0.45f && dx < dy ? Hex("#FFD36B") : Hex("#E9A23B"); // honey
+                    else c = Hex("#4A2C10");                                               // empty cell
+                    p.Set(x, y, c);
+                }
+            }
+            return p;
+        }
+
+        /// <summary>A papery hive hanging from the ceiling (pivot top middle).</summary>
+        static Px HiveChunk()
+        {
+            var p = new Px(36, 46);
+            p.Rect(16, 40, 4, 6, Hex("#5A3A1C"));
+            p.Ellipse(18f, 22f, 16f, 19f, (nx, ny) =>
+            {
+                int band = Mathf.FloorToInt((ny + 1f) * 6f);
+                var c = band % 2 == 0 ? Hex("#D9A64B") : Hex("#B9842E");
+                if (nx > 0.55f) c = Shade(c, 0.75f);
+                if (-nx * 0.6f + ny * 0.4f > 0.6f) c = Hex("#F2CB76");
+                return c;
+            });
+            p.Ellipse(18f, 10f, 4f, 3f, (nx, ny) => Hex("#2A1606")); // the entrance
+            p.Outline(Ink);
+            return p;
+        }
+
+        /// <summary>Moonlit Shrine: a red torii gate (pivot bottom middle).</summary>
+        static Px ShrineGate()
+        {
+            var p = new Px(176, 128);
+            var red = Hex("#B3261E");
+            var redLight = Hex("#D9432F");
+            var redDark = Hex("#7A1712");
+            var black = Hex("#1A1414");
+            // pillars
+            foreach (int x in new[] { 30, 134 })
+            {
+                p.Rect(x, 8, 12, 96, red);
+                p.Rect(x, 8, 3, 96, redLight);
+                p.Rect(x + 9, 8, 3, 96, redDark);
+                p.Rect(x - 2, 0, 16, 10, black); // stone feet
+            }
+            // the lower beam (nuki)
+            p.Rect(20, 84, 136, 8, red);
+            p.Rect(20, 84, 136, 2, redDark);
+            // the plaque between the beams
+            p.Rect(80, 92, 16, 16, black);
+            p.Rect(83, 95, 10, 10, Hex("#C9A24B"));
+            // the curved top beams (kasagi + shimaki)
+            for (int x = 0; x < 176; x++)
+            {
+                float nx = (x - 88f) / 88f;
+                int lift = (int)(nx * nx * 10f);
+                p.Rect(x, 104 + lift, 1, 8, red);
+                p.Rect(x, 112 + lift, 1, 8, black);
+                p.Set(x, 104 + lift, redDark);
+            }
+            p.Outline(Ink);
+            return p;
+        }
+
+        /// <summary>A paper lantern (pivot at the hook on top).</summary>
+        static Px Lantern()
+        {
+            var p = new Px(14, 20);
+            p.Rect(6, 17, 2, 3, Hex("#2A2020"));
+            p.Rect(4, 15, 6, 2, Hex("#2A2020"));
+            p.Ellipse(7f, 9f, 6f, 6.5f, (nx, ny) =>
+            {
+                int rib = Mathf.FloorToInt((ny + 1f) * 4f);
+                var c = Mathf.Abs(nx) < 0.5f ? Hex("#FFE6B0") : Hex("#F2A65A");
+                if (rib % 2 == 1 && Mathf.Abs(ny) < 0.85f) c = Shade(c, 0.9f);
+                return c;
+            });
+            p.Rect(4, 1, 6, 2, Hex("#2A2020"));
+            p.Rect(5, 6, 4, 6, Hex("#C0392B")); // a painted mark
+            p.Outline(Ink);
+            return p;
+        }
+
+        /// <summary>A rock spike hanging from a cave ceiling (pivot top middle).</summary>
+        static Px Stalactite()
+        {
+            var p = new Px(16, 34);
+            for (int y = 0; y < 34; y++)
+            {
+                float t = 1f - y / 33f; // 1 at the tip (bottom) .. 0 at the root
+                float half = 7f * (1f - t * t * 0.95f);
+                float sway = Mathf.Sin(y * 0.3f) * 0.8f;
+                for (int x = 0; x < 16; x++)
+                {
+                    float dx = x + 0.5f - 8f - sway;
+                    if (Mathf.Abs(dx) > half) continue;
+                    p.Set(x, y, dx < -half * 0.3f ? Hex("#5A4E66") : dx > half * 0.4f ? Hex("#2E2638") : Hex("#463C52"));
+                }
+            }
+            p.Outline(Ink);
+            return p;
+        }
+
+        /// <summary>A falling rock (the Brood Mother's cave-ins).</summary>
+        static Px Rock()
+        {
+            var p = new Px(20, 22);
+            var pts = new[] { new Vector2(10, 21), new Vector2(18, 15), new Vector2(17, 5), new Vector2(11, 1), new Vector2(3, 4), new Vector2(2, 14) };
+            for (int y = 0; y < 22; y++)
+            for (int x = 0; x < 20; x++)
+            {
+                // inside the polygon?
+                bool inside = false;
+                for (int i = 0, j = pts.Length - 1; i < pts.Length; j = i++)
+                    if ((pts[i].y > y) != (pts[j].y > y) && x < (pts[j].x - pts[i].x) * (y - pts[i].y) / (pts[j].y - pts[i].y) + pts[i].x) inside = !inside;
+                if (!inside) continue;
+                float lightK = (x - y * 0.6f) / 20f;
+                p.Set(x, y, lightK < -0.3f ? Hex("#7A6C8A") : lightK > 0.25f ? Hex("#3A3046") : Hex("#5A4E66"));
+            }
+            p.Line(6, 12, 11, 9, Hex("#2A2232"));
+            p.Line(11, 9, 13, 14, Hex("#2A2232"));
+            p.Outline(Ink);
+            return p;
+        }
+
+        /// <summary>Glowing mushrooms for the Nest floor (pivot bottom middle).</summary>
+        static Px Mushrooms()
+        {
+            var p = new Px(26, 18);
+            var specs = new[] { (6f, 7f, 5f, 3.2f), (14f, 11f, 6f, 3.8f), (21f, 6f, 4f, 2.6f) };
+            foreach (var (x, h, r, rh) in specs)
+            {
+                p.Rect((int)x - 1, 0, 2, (int)h, Hex("#C9D6E0"));
+                p.Ellipse(x, h, r, rh, (nx, ny) => ny > 0.2f ? Hex("#B58CFF") : nx < -0.3f ? Hex("#E0CCFF") : Hex("#8E5CE0"));
+                p.Set((int)x - 2, (int)h + 1, Hex("#F4EAFF"));
+                p.Set((int)x + 1, (int)h, Hex("#F4EAFF"));
+            }
+            p.Outline(Ink);
+            return p;
         }
 
         static Px ChainLink()
@@ -819,6 +1159,651 @@ namespace PixelStudy.EditorTools
                 frames.Add(p);
             }
             return frames.ToArray();
+        }
+
+        // =====================================================================
+        // Normal-floor bugs added for floors 5-49
+        // =====================================================================
+
+        /// <summary>Pill Bug (40x28): walk 0-1, curl 2, ball 3, dazed on its back 4.</summary>
+        static Px[] PillBugFrames()
+        {
+            var shell = Hex("#7D8796");
+            var light = Hex("#A9B3C2");
+            var dark = Hex("#4E5663");
+            var leg = Hex("#2A2E36");
+            var frames = new List<Px>();
+            for (int f = 0; f < 5; f++)
+            {
+                var p = new Px(40, 28);
+                if (f <= 1)
+                {
+                    // walking: a long segmented dome on lots of little legs
+                    for (int i = 0; i < 6; i++)
+                    {
+                        float x = 9 + i * 4.2f, off = ((i + f) % 2 == 0 ? -1f : 1f);
+                        p.Line(x, 4, x + off, 0, leg);
+                    }
+                    p.Ellipse(19f, 6f, 15f, 10f, (nx, ny) =>
+                    {
+                        if (ny < -0.2f) return Clear;
+                        int seg = Mathf.FloorToInt((nx + 1f) * 4.5f);
+                        var c = ny > 0.55f && nx < 0.3f ? light : seg % 2 == 0 ? shell : Shade(shell, 0.85f);
+                        if (Mathf.Repeat((nx + 1f) * 4.5f, 1f) < 0.12f) c = dark;
+                        return c;
+                    });
+                    p.Ellipse(34f, 5f, 3.5f, 3f, (a, b) => dark); // head
+                    p.Line(36, 7, 39, 10, leg);
+                    p.Set(35, 6, Hex("#E8E0C8"));
+                }
+                else if (f == 2 || f == 3)
+                {
+                    // curling up (2) / a tight armored ball (3)
+                    float r = f == 2 ? 9.5f : 10.5f;
+                    p.Ellipse(19f, r + 0.5f, f == 2 ? 12f : r, r, (nx, ny) =>
+                    {
+                        float a = Mathf.Atan2(ny, nx);
+                        var c = -nx * 0.5f + ny * 0.7f > 0.5f ? light : -nx * 0.5f + ny * 0.7f < -0.5f ? dark : shell;
+                        if (Mathf.Repeat((a + Mathf.PI) / (Mathf.PI * 2f) * 9f, 1f) < 0.12f && nx * nx + ny * ny > 0.2f) c = dark;
+                        return c;
+                    });
+                    if (f == 2) for (int i = 0; i < 4; i++) p.Line(13 + i * 4, 2, 14 + i * 4, 0, leg);
+                }
+                else
+                {
+                    // dazed on its back, legs waving
+                    p.Ellipse(19f, 7f, 15f, 8f, (nx, ny) => ny > 0.2f ? Clear : ny < -0.6f ? dark : Hex("#C9B79A"));
+                    for (int i = 0; i < 6; i++) p.Line(9 + i * 4.2f, 7, 8 + i * 4.2f + (i % 2) * 2, 13, leg);
+                    p.Ellipse(19f, 4f, 15f, 5f, (nx, ny) => ny > 0f ? Clear : shell);
+                }
+                p.Outline(Ink);
+                frames.Add(p);
+            }
+            return frames.ToArray();
+        }
+
+        /// <summary>Termite Guard (44x40) behind a big chitin shield: walk 0-1, tell 2 (shield drawn back), bash 3, broken 4.</summary>
+        static Px[] TermiteFrames()
+        {
+            var body = Hex("#E8DCC0");
+            var bodyDark = Hex("#B8A888");
+            var head = Hex("#C2552A");
+            var headLight = Hex("#E07A44");
+            var mand = Hex("#3A1A0E");
+            var shield = Hex("#6B4A2A");
+            var shieldLight = Hex("#9A6E3E");
+            var rim = Hex("#C9A15A");
+            var leg = Hex("#8A7A5E");
+            var frames = new List<Px>();
+            for (int f = 0; f < 5; f++)
+            {
+                var p = new Px(44, 40);
+                float shieldX = f == 2 ? 29f : f == 3 ? 35f : 32f;
+                float shieldTilt = f == 4 ? -35f : f == 2 ? 8f : 0f;
+                float shieldY = f == 4 ? 7f : 14f;
+                // legs
+                for (int i = 0; i < 3; i++)
+                {
+                    float hx = 12 + i * 6, off = ((i + f) % 2 == 0 ? -1.5f : 1.5f);
+                    p.Line(hx, 8, hx + 2, 4, leg, 2);
+                    p.Line(hx + 2, 4, hx + off, 0, leg, 2);
+                }
+                // segmented abdomen and thorax
+                p.Ellipse(11f, 11f, 9f, 6.5f, (nx, ny) => Mathf.Repeat((nx + 1f) * 3f, 1f) < 0.18f ? bodyDark : ny > 0.4f ? Hex("#FFF4DC") : body);
+                p.Ellipse(21f, 11f, 5f, 4.5f, (nx, ny) => ny > 0.4f ? Hex("#FFF4DC") : body);
+                // big armored head with mandibles
+                float hy = f == 4 ? 10f : 14f;
+                p.Ellipse(27f, hy, 6f, 5.5f, (nx, ny) => ny > 0.35f && nx < 0.3f ? headLight : head);
+                p.Line(31, hy - 2, 36, hy - 4, mand, 2);
+                p.Line(31, hy - 3, 35, hy - 6, mand, 2);
+                p.Set(29, (int)hy + 1, Hex("#1A0E08"));
+                // the shield: a tall plate carried in front
+                RotEllipse(p, shieldX, shieldY + 5f, 5f, 12f, shieldTilt, (u, v) =>
+                {
+                    float r = u * u + v * v;
+                    if (r > 0.75f) return rim;
+                    return u < -0.3f ? shieldLight : shield;
+                });
+                RotEllipse(p, shieldX, shieldY + 5f, 1.4f, 9f, shieldTilt, (u, v) => Shade(shield, 0.75f));
+                p.Outline(Ink);
+                frames.Add(p);
+            }
+            return frames.ToArray();
+        }
+
+        /// <summary>Scorpion (72x48): walk 0-1, grab tell 2 (claws high and open), grab 3, tail raised 4, tail stab 5.</summary>
+        static Px[] ScorpionFrames()
+        {
+            var body = Hex("#8A4022");
+            var light = Hex("#C0622E");
+            var dark = Hex("#4E2010");
+            var claw = Hex("#9E4A26");
+            var sting = Hex("#F0D86A");
+            var frames = new List<Px>();
+            for (int f = 0; f < 6; f++)
+            {
+                var p = new Px(72, 48);
+                // legs (4 pairs, low)
+                for (int i = 0; i < 4; i++)
+                {
+                    float hx = 22 + i * 5, off = ((i + f) % 2 == 0 ? -2f : 2f);
+                    p.Line(hx, 7, hx - 3, 4, dark, 2);
+                    p.Line(hx - 3, 4, hx - 4 + off, 0, dark, 2);
+                }
+                // tail: a curl of segments from the back of the body, stinger at the end
+                Vector2[] tail = f == 4
+                    ? new[] { new Vector2(16, 9), new Vector2(9, 15), new Vector2(8, 25), new Vector2(15, 34), new Vector2(27, 38), new Vector2(38, 35), new Vector2(44, 30) }
+                    : f == 5
+                    ? new[] { new Vector2(16, 9), new Vector2(11, 17), new Vector2(15, 27), new Vector2(28, 33), new Vector2(42, 29), new Vector2(54, 19), new Vector2(60, 8) }
+                    : new[] { new Vector2(16, 9), new Vector2(9, 14), new Vector2(7, 22), new Vector2(11, 29), new Vector2(19, 31), new Vector2(25, 27), new Vector2(26, 22) };
+                for (int i = 0; i < tail.Length - 1; i++)
+                    Capsule(p, tail[i], tail[i + 1], 4f - i * 0.4f, 3.6f - i * 0.4f, i % 2 == 0 ? body : light);
+                var tip = tail[tail.Length - 1];
+                var dir = (tail[tail.Length - 1] - tail[tail.Length - 2]).normalized;
+                Capsule(p, tip, tip + dir * 5f, 2.2f, 0.6f, sting);
+                // body
+                p.Ellipse(27f, 10f, 13f, 6f, (nx, ny) =>
+                {
+                    var c = ny > 0.4f ? light : ny < -0.4f ? dark : body;
+                    if (Mathf.Repeat((nx + 1f) * 3.5f, 1f) < 0.15f) c = dark;
+                    return c;
+                });
+                p.Ellipse(41f, 10f, 5f, 4.5f, (nx, ny) => ny > 0.3f ? light : body); // head
+                p.Set(43, 12, Hex("#1A0A04"));
+                p.Set(44, 12, Hex("#1A0A04"));
+                // claws: arm to a big pincer, open or shut
+                bool open = f == 2;
+                float armY = f == 2 ? 20f : 11f, reach = f == 3 ? 66f : f == 2 ? 58f : 60f;
+                foreach (var (dy, col) in new[] { (2f, dark), (0f, claw) })
+                {
+                    var shoulder = new Vector2(44f, 10f + dy);
+                    var wrist = new Vector2(reach - 8f, armY + dy);
+                    Capsule(p, shoulder, new Vector2(50f, (armY + 10f) * 0.5f + dy + 2f), 2.2f, 2f, col);
+                    Capsule(p, new Vector2(50f, (armY + 10f) * 0.5f + dy + 2f), wrist, 2f, 2.4f, col);
+                    p.Ellipse(wrist.x + 2f, wrist.y, 4.5f, 3.2f, (a, b) => b > 0.3f ? light : col);
+                    float gap = open ? 3.5f : 0.8f;
+                    Capsule(p, wrist + new Vector2(5f, 1f), wrist + new Vector2(10f, 1f + gap), 1.6f, 0.6f, col);
+                    Capsule(p, wrist + new Vector2(5f, -1f), wrist + new Vector2(10f, -1f - gap * 0.6f), 1.4f, 0.5f, col);
+                }
+                p.Outline(Ink);
+                frames.Add(p);
+            }
+            return frames.ToArray();
+        }
+
+        /// <summary>Firefly Bomber (36x30): three wing positions; its lantern glows (the glow itself is a separate sprite).</summary>
+        static Px[] FireflyFrames()
+        {
+            var frames = new Px[3];
+            var black = Hex("#241E1A");
+            var shell = Hex("#4A2E22");
+            var lamp = Hex("#D8FF6A");
+            var lampHot = Hex("#F6FFD0");
+            var wing = Hex("#E8F4D8", 160);
+            var wingEdge = Hex("#B8D49A", 220);
+            for (int f = 0; f < 3; f++)
+            {
+                var p = new Px(36, 30);
+                p.Line(18, 10, 16, 5, black);
+                p.Line(22, 10, 23, 5, black);
+                // glowing lantern abdomen
+                p.Ellipse(10f, 12f, 8f, 6f, (nx, ny) => nx * nx + ny * ny < 0.25f ? lampHot : lamp);
+                // thorax + head
+                p.Ellipse(20f, 14f, 5f, 4.5f, (nx, ny) => ny > 0.4f ? Shade(shell, 1.4f) : shell);
+                p.Ellipse(26f, 15f, 3.5f, 3.5f, (nx, ny) => black);
+                p.Set(27, 16, Hex("#FF8A3A"));
+                p.Line(26, 18, 30, 24, black);
+                p.Line(27, 18, 33, 22, black);
+                p.Outline(Ink);
+                float wy = f == 0 ? 23f : f == 1 ? 20f : 17f;
+                p.Ellipse(17f, wy, 8f, f == 1 ? 2.5f : 3.5f, (nx, ny) => nx * nx + ny * ny > 0.7f ? wingEdge : wing, true);
+                frames[f] = p;
+            }
+            return frames;
+        }
+
+        /// <summary>Stag Beetle elite (104x64): walk 0-3, tell 4 (head up, jaws wide), charge 5 (head down), lift 6 (jaws raised).</summary>
+        static Px DrawStag(int legPhase, int pose)
+        {
+            var p = new Px(104, 64);
+            var shell = Hex("#5A2A1A");
+            var shellLight = Hex("#8E4A2C");
+            var shellDark = Hex("#2E140C");
+            var head = Hex("#3A1C10");
+            var jaw = Hex("#B87A3A");
+            var jawLight = Hex("#E8B068");
+            var leg = Hex("#1E0E08");
+            float lift = pose == 4 ? 4f : pose == 6 ? 3f : 0f;
+            float lean = pose == 5 ? 4f : 0f;
+            // legs
+            for (int i = 0; i < 3; i++)
+            {
+                float hx = 24 + i * 16 + lean;
+                int ph = (legPhase + i) % 4;
+                float off = ph == 0 ? -4f : ph == 2 ? 4f : 0f, footLift = ph == 3 ? 3f : 0f;
+                p.Line(hx, 16 + lift * 0.5f, hx + 6, 9 + footLift, leg, 3);
+                p.Line(hx + 6, 9 + footLift, hx + off + 2, footLift, leg, 3);
+            }
+            // shell
+            p.Ellipse(40f + lean, 24f + lift, 28f, 17f, (nx, ny) =>
+            {
+                if (ny < -0.45f) return Clear;
+                float l = -nx * 0.45f + ny * 0.8f;
+                var c = l > 0.62f ? shellLight : l < -0.25f ? shellDark : shell;
+                if (ny < -0.25f) c = shellDark;
+                return c;
+            });
+            for (float x = 14 + lean; x < 66 + lean; x++) p.Set((int)x, (int)(20 + lift), shellDark);
+            // head and the huge antler-jaws
+            float hx2 = 70f + lean * 1.5f, hy2 = 19f + lift * 1.4f + (pose == 5 ? -3f : 0f);
+            p.Ellipse(hx2, hy2, 9f, 8f, (nx, ny) => ny > 0.4f && nx < 0.2f ? Shade(head, 1.5f) : head);
+            p.Rect((int)hx2 + 3, (int)hy2 + 2, 3, 3, Hex("#FFB040"));
+            float angle = pose == 4 ? 34f : pose == 5 ? -12f : pose == 6 ? 62f : 14f;
+            float spread = pose == 4 ? 16f : pose == 6 ? 4f : 8f;
+            foreach (var (deg, col) in new[] { (angle + spread, Shade(jaw, 0.75f)), (angle - spread * 0.4f, jaw) })
+            {
+                var root = new Vector2(hx2 + 6f, hy2 + 2f);
+                var mid = root + Dir(deg) * 16f;
+                var tip = mid + Dir(deg - 40f) * 12f;
+                Capsule(p, root, mid, 3.2f, 2.6f, col);
+                Capsule(p, mid, tip, 2.4f, 0.8f, col);
+                Capsule(p, mid, mid + Dir(deg + 50f) * 5f, 1.6f, 0.6f, col); // the antler tine
+                p.Line(root.x, root.y + 1, mid.x, mid.y + 1, jawLight);
+            }
+            p.Outline(Ink);
+            return p;
+        }
+
+        static Px[] StagFrames()
+        {
+            var frames = new List<Px>();
+            for (int i = 0; i < 4; i++) frames.Add(DrawStag(i, 0));
+            frames.Add(DrawStag(0, 4));
+            frames.Add(DrawStag(2, 5));
+            frames.Add(DrawStag(0, 6));
+            return frames.ToArray();
+        }
+
+        // =====================================================================
+        // Floor 40: the Silk Widow (and her spiderlings)
+        // =====================================================================
+
+        /// <summary>
+        /// A spider from the side, facing right (base canvas 44x26 scaled by s, feet at y = 0).
+        /// pose 0 walk, 1 rear up (tell), 2 bite, 3 spit (abdomen tipped forward), 4 splayed flat.
+        /// </summary>
+        static Px DrawSpider(float s, int legPhase, int pose, Color32 body, Color32 light, Color32 mark, Color32 eye, bool hourglass)
+        {
+            var p = new Px(Mathf.RoundToInt(44 * s), Mathf.RoundToInt(28 * s));
+            var legFar = Shade(body, 0.7f);
+            int w = Mathf.Max(1, Mathf.RoundToInt(s * 1.1f));
+            float rear = pose == 1 ? 3f : 0f, lunge = pose == 2 ? 3f : 0f, flat = pose == 4 ? -3f : 0f;
+            Vector2 S(float x, float y) => new Vector2(x * s, y * s);
+
+            float[] attach = { 22f, 24f, 26f, 28f };
+            void Legs(Color32 col, float shift, bool far)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    float ax = attach[i] + lunge + shift, ay = 10f + rear * (i >= 2 ? 1f : 0.5f) + flat;
+                    float side = i < 2 ? -1f : 1f;
+                    float reach = i == 0 || i == 3 ? 13f : 7f;
+                    int ph = (legPhase + i + (far ? 1 : 0)) % 4;
+                    float step = ph == 0 ? -2f : ph == 2 ? 2f : 0f;
+                    var knee = new Vector2(ax + side * reach * 0.55f, 17f + flat * 2f);
+                    var foot = new Vector2(ax + side * reach + step, ph == 3 ? 1.5f : 0f);
+                    if (pose == 4) { knee = new Vector2(ax + side * reach * 0.7f, 9f); foot = new Vector2(ax + side * (reach + 4f), 0f); }
+                    if (pose == 1 && i >= 2)
+                    {
+                        // front legs raised high, menacing
+                        knee = new Vector2(ax + 5f + (i - 2) * 2f, 22f + (i - 2) * 2f);
+                        foot = new Vector2(ax + 11f + (i - 2) * 3f, 16f + (i - 2) * 3f);
+                    }
+                    p.Line(ax * s, ay * s, knee.x * s, knee.y * s, col, w + 1);
+                    p.Line(knee.x * s, knee.y * s, foot.x * s, foot.y * s, col, w);
+                }
+            }
+
+            Legs(legFar, 1.5f, true);
+            // abdomen: big and round, tipped forward when spitting
+            RotEllipse(p, (13f + lunge * 0.5f) * s, (13f + rear * 0.6f + flat + (pose == 3 ? 3f : 0f)) * s, 10.5f * s, 8.5f * s, pose == 3 ? -28f : rear * 4f, (u, v) =>
+            {
+                var c = v > 0.45f && u > -0.3f ? light : body;
+                if (hourglass && Mathf.Abs(u + 0.1f) < 0.22f - Mathf.Abs(v + 0.62f) * 0.5f && v < -0.25f) c = mark;
+                return c;
+            });
+            if (!hourglass) p.Ellipse((13f + lunge * 0.5f) * s, (16f + rear * 0.6f + flat) * s, 1.6f * s, 1.6f * s, (a, b) => mark);
+            // cephalothorax and head
+            var ceph = S(26f + lunge, 10f + rear + flat);
+            p.Ellipse(ceph.x, ceph.y, 6.5f * s, 4.8f * s, (nx, ny) => ny > 0.4f ? light : body);
+            // eyes: a cluster of red beads
+            foreach (var (ex, ey, er) in new[] { (30.5f, 12f, 1.3f), (31.8f, 10.8f, 1f), (29.2f, 12.8f, 0.9f), (31.2f, 13f, 0.8f) })
+                p.Ellipse((ex + lunge) * s, (ey + rear + flat) * s, er * s, er * s, (a, b) => a < -0.2f && b > 0.2f ? Hex("#FFD0D0") : eye);
+            // fangs
+            float open = pose == 2 ? 2.5f : pose == 1 ? 1.5f : 0.5f;
+            var fang = Hex("#E8D8C8");
+            p.Line((31f + lunge) * s, (8f + rear + flat) * s, (33.5f + lunge) * s, (4.5f + rear + flat - open) * s, fang, w);
+            p.Line((30f + lunge) * s, (8f + rear + flat) * s, (31.5f + lunge + open * 0.6f) * s, (4f + rear + flat) * s, fang, w);
+            Legs(body, 0f, false);
+            p.Outline(Ink);
+            return p;
+        }
+
+        static Px[] SpiderFrames(float s, Color32 body, Color32 light, Color32 mark, Color32 eye, bool hourglass, bool boss)
+        {
+            // walk 0-3, tell 4, lunge/bite 5 (+ boss: spit 6, splayed 7)
+            var frames = new List<Px>();
+            for (int i = 0; i < 4; i++) frames.Add(DrawSpider(s, i, 0, body, light, mark, eye, hourglass));
+            frames.Add(DrawSpider(s, 0, 1, body, light, mark, eye, hourglass));
+            frames.Add(DrawSpider(s, 2, 2, body, light, mark, eye, hourglass));
+            if (boss)
+            {
+                frames.Add(DrawSpider(s, 0, 3, body, light, mark, eye, hourglass));
+                frames.Add(DrawSpider(s, 0, 4, body, light, mark, eye, hourglass));
+            }
+            return frames.ToArray();
+        }
+
+        /// <summary>A strand of silk, 1 unit long (pivot at the left end).</summary>
+        static Px SilkStrand()
+        {
+            var p = new Px(32, 3);
+            for (int x = 0; x < 32; x++)
+            {
+                p.Set(x, 1, new Color32(245, 245, 255, 235));
+                if (Hash(x, 0, 701) < 0.3f) p.Set(x, Hash(x, 1, 702) < 0.5f ? 0 : 2, new Color32(220, 220, 240, 120));
+            }
+            return p;
+        }
+
+        /// <summary>A sticky glob of silk.</summary>
+        static Px SilkGlob()
+        {
+            var p = new Px(16, 16);
+            p.Ellipse(8f, 8f, 5.5f, 5f, (nx, ny) => nx * nx + ny * ny < 0.3f ? Hex("#FFFFFF") : Hex("#D8D8E8"));
+            for (int i = 0; i < 6; i++)
+            {
+                float a = i * 60f * Mathf.Deg2Rad + 0.3f;
+                p.Line(8f, 8f, 8f + Mathf.Cos(a) * 7.5f, 8f + Mathf.Sin(a) * 7.5f, new Color32(235, 235, 250, 180));
+            }
+            p.Outline(Hex("#5A5A70"));
+            return p;
+        }
+
+        /// <summary>Sticky web on the floor (pivot bottom middle).</summary>
+        static Px WebPatchArt()
+        {
+            var p = new Px(72, 14);
+            var thread = new Color32(235, 235, 250, 200);
+            var faint = new Color32(220, 220, 240, 110);
+            for (int i = 0; i < 9; i++)
+            {
+                float x0 = 2 + i * 8.5f;
+                p.Line(36, 1, x0, 1 + Hash(i, 0, 711) * 10f, thread);
+            }
+            for (int r = 0; r < 4; r++)
+                for (int x = 4; x < 68; x++)
+                {
+                    float y = 2 + r * 2.6f + Mathf.Sin(x * 0.35f + r) * 1.2f;
+                    if (Hash(x, r, 712) < 0.75f) p.Set(x, Mathf.Clamp(Mathf.RoundToInt(y), 0, 13), faint);
+                }
+            for (int x = 0; x < 72; x++) p.Set(x, 0, thread);
+            return p;
+        }
+
+        /// <summary>Silk wrapped round the knight (centered on him).</summary>
+        static Px CocoonArt()
+        {
+            var p = new Px(40, 68);
+            p.Ellipse(20f, 34f, 17f, 32f, (nx, ny) =>
+            {
+                float band = Mathf.Repeat(ny * 6f + nx * 1.4f, 1f);
+                var c = band < 0.18f ? Hex("#B8B8CC") : -nx * 0.5f + ny * 0.3f > 0.4f ? Hex("#FFFFFF") : Hex("#E2E2EE");
+                return c;
+            });
+            for (int i = 0; i < 6; i++)
+                p.Line(4 + Hash(i, 0, 721) * 32, 10 + i * 9, 36 - Hash(i, 1, 722) * 32, 15 + i * 9, Hex("#C8C8DA"));
+            p.Outline(Hex("#5A5A70"));
+            return p;
+        }
+
+        /// <summary>A silk bridge (tiles sideways: 32x10, full rect).</summary>
+        static Px WebBridgeArt()
+        {
+            var p = new Px(32, 10);
+            var cable = Hex("#E8E8F4");
+            var shade = Hex("#A8A8C0");
+            for (int x = 0; x < 32; x++)
+            {
+                float sag = Mathf.Sin(x / 31f * Mathf.PI) * 1.5f;
+                p.Set(x, Mathf.RoundToInt(9 - sag), cable);
+                p.Set(x, Mathf.RoundToInt(8 - sag), shade);
+                p.Set(x, Mathf.RoundToInt(5 - sag * 0.6f), cable);
+                if (x % 4 == 0) p.Line(x, 9 - sag, x + 2, 2, new Color32(220, 220, 240, 150));
+            }
+            for (int x = 0; x < 32; x++) if (Hash(x, 3, 731) < 0.4f) p.Set(x, 1, new Color32(220, 220, 240, 110));
+            return p;
+        }
+
+        /// <summary>A huge radial web for the back of the Widow's arena.</summary>
+        static Px BigWeb()
+        {
+            const int n = 256;
+            var p = new Px(n, n);
+            var c = new Vector2(n * 0.5f, n * 0.5f);
+            var thread = new Color32(255, 255, 255, 150);
+            for (int i = 0; i < 18; i++)
+            {
+                float a = i * 20f * Mathf.Deg2Rad + Hash(i, 0, 741) * 0.15f;
+                p.Line(c.x, c.y, c.x + Mathf.Cos(a) * 128f, c.y + Mathf.Sin(a) * 128f, thread);
+            }
+            for (int ring = 1; ring < 14; ring++)
+            {
+                float r = ring * 9.5f + Hash(ring, 0, 742) * 3f;
+                for (int i = 0; i < 18; i++)
+                {
+                    float a0 = i * 20f * Mathf.Deg2Rad, a1 = (i + 1) * 20f * Mathf.Deg2Rad;
+                    var m = new Vector2(Mathf.Cos((a0 + a1) * 0.5f), Mathf.Sin((a0 + a1) * 0.5f)) * (r - 2f);
+                    if (Hash(ring, i, 743) < 0.12f) continue; // torn
+                    p.Line(c.x + Mathf.Cos(a0) * r, c.y + Mathf.Sin(a0) * r, c.x + m.x, c.y + m.y, new Color32(255, 255, 255, 110));
+                    p.Line(c.x + m.x, c.y + m.y, c.x + Mathf.Cos(a1) * r, c.y + Mathf.Sin(a1) * r, new Color32(255, 255, 255, 110));
+                }
+            }
+            return p;
+        }
+
+        /// <summary>A silk egg sac clutch (pivot bottom middle).</summary>
+        static Px EggSac()
+        {
+            var p = new Px(30, 26);
+            foreach (var (x, y, r) in new[] { (9f, 8f, 7f), (20f, 9f, 8f), (15f, 17f, 7f) })
+                p.Ellipse(x, y, r, r * 0.95f, (nx, ny) => -nx * 0.5f + ny * 0.6f > 0.45f ? Hex("#FFFFFF") : nx * nx + ny * ny > 0.75f ? Hex("#B8B8CC") : Hex("#E2E2EE"));
+            for (int i = 0; i < 5; i++) p.Line(2 + i * 6, 0, 6 + i * 5, 14 + (i % 2) * 4, new Color32(200, 200, 220, 160));
+            p.Outline(Hex("#4A4A60"));
+            return p;
+        }
+
+        /// <summary>Something wrapped in silk, hanging from a thread (pivot at the top of the thread).</summary>
+        static Px HangingCocoon()
+        {
+            var p = new Px(20, 52);
+            p.Line(10, 51, 10, 38, new Color32(235, 235, 250, 220));
+            p.Ellipse(10f, 20f, 7.5f, 17f, (nx, ny) =>
+            {
+                float band = Mathf.Repeat(ny * 5f + nx, 1f);
+                return band < 0.2f ? Hex("#9A9AB0") : -nx * 0.5f > 0.2f ? Hex("#E8E8F2") : Hex("#C8C8DA");
+            });
+            p.Set(8, 30, Hex("#3A1A1A"));
+            p.Outline(Hex("#3A3A50"));
+            return p;
+        }
+
+        // =====================================================================
+        // Floor 50: the Parasite, the throne room and its storm
+        // =====================================================================
+
+        /// <summary>
+        /// The Parasite (176x136, faces right): a bloated horror wearing the knight's helmet, with mantis
+        /// scythes and wasp wings. pose 0 idle, 1 idle swell, 2-3 walk, 4 rear (tell), 5 slam, 6-7 fly, 8 spit.
+        /// </summary>
+        static Px DrawParasite(int pose)
+        {
+            var p = new Px(176, 136);
+            var flesh = Hex("#9C84B4");
+            var fleshLight = Hex("#C8B4DC");
+            var fleshDark = Hex("#5E4A78");
+            var vein = Hex("#D46BFF");
+            var legCol = Hex("#2E2236");
+            var bone = Hex("#E6E0D0");
+            var boneDark = Hex("#A8A090");
+            var steel = Hex("#8A909C");
+            var steelLight = Hex("#C4CAD4");
+            var wingFill = Hex("#E0D0FF", 120);
+            var wingEdge = Hex("#B090E0", 210);
+            float swell = pose == 1 ? 2.5f : 0f;
+            float rear = pose == 4 ? 10f : pose == 8 ? 4f : 0f;
+            float low = pose == 5 ? -10f : pose == 6 || pose == 7 ? 8f : 0f;
+            bool fly = pose == 6 || pose == 7;
+            int legPhase = pose == 2 ? 0 : pose == 3 ? 2 : 1;
+
+            // wings (open when flying)
+            if (fly)
+            {
+                float tilt = pose == 6 ? 30f : -5f;
+                RotEllipse(p, 62f, 92f + low, 46f, 14f, tilt, (u, v) => u * u + v * v > 0.8f ? wingEdge : Mathf.Repeat(u * 7f + v * 2f, 1f) < 0.1f ? wingEdge : wingFill, true);
+                RotEllipse(p, 74f, 86f + low, 38f, 10f, tilt - 10f, (u, v) => u * u + v * v > 0.8f ? wingEdge : wingFill, true);
+            }
+
+            // legs: spindly, six of them
+            for (int i = 0; i < 6; i++)
+            {
+                float hx = 58 + i * 11, hy = 34 + low + rear * 0.3f;
+                int ph = (legPhase + i) % 4;
+                float step = ph == 0 ? -5f : ph == 2 ? 5f : 0f;
+                var knee = new Vector2(hx + (i < 3 ? -10f : 10f), 46f + low);
+                var foot = fly ? new Vector2(hx + (i < 3 ? -6f : 6f), 14f + low) : new Vector2(hx + (i < 3 ? -16f : 16f) + step, 0f);
+                var col = i % 2 == 0 ? legCol : Shade(legCol, 1.4f);
+                p.Line(hx, hy, knee.x, knee.y, col, 3);
+                p.Line(knee.x, knee.y, foot.x, foot.y, col, 2);
+            }
+
+            // bloated, segmented abdomen with glowing veins
+            RotEllipse(p, 48f, 50f + low + swell * 0.5f, 42f + swell, 30f + swell, 8f + rear * 0.6f, (u, v) =>
+            {
+                var c = v > 0.5f ? fleshLight : v < -0.4f ? fleshDark : flesh;
+                if (Mathf.Repeat(u * 5f, 1f) < 0.1f) c = fleshDark;
+                if (Mathf.Abs(Mathf.Sin(u * 9f + v * 4f)) < 0.07f && v > -0.6f) c = vein;
+                return c;
+            });
+            // thorax
+            var thorax = new Vector2(98f, 52f + low + rear);
+            p.Ellipse(thorax.x, thorax.y, 22f, 19f, (nx, ny) => ny > 0.45f ? fleshLight : ny < -0.5f ? fleshDark : flesh);
+            // spines along the back
+            for (int i = 0; i < 6; i++)
+            {
+                var b = new Vector2(30f + i * 13f, 74f + low - Mathf.Abs(i - 2.5f) * 2f + (i > 3 ? rear : 0f));
+                Capsule(p, b, b + new Vector2(-4f, 10f), 2.2f, 0.5f, boneDark);
+            }
+            if (!fly)
+                RotEllipse(p, 60f, 82f + low, 36f, 6f, 6f, (u, v) => v > 0.2f ? Hex("#D8C8F0") : Hex("#9A84C0")); // folded wings
+
+            // mantis scythes
+            var shoulder = thorax + new Vector2(10f, 6f);
+            float armDeg = pose == 4 ? 70f : pose == 5 ? -55f : 15f;
+            float bladeDeg = pose == 4 ? 150f : pose == 5 ? -95f : 115f;
+            foreach (var (dx, col, bl) in new[] { (-6f, fleshDark, boneDark), (0f, flesh, bone) })
+            {
+                var s0 = shoulder + new Vector2(dx, 0f);
+                var elbow = s0 + Dir(armDeg) * 26f;
+                var tip = elbow + Dir(bladeDeg) * 34f;
+                Capsule(p, s0, elbow, 5f, 4f, col);
+                Capsule(p, elbow, tip, 4.2f, 0.8f, bl);
+                if (dx == 0f) p.Line(elbow.x, elbow.y - 2f, tip.x, tip.y, Hex("#FFFFFF"));
+            }
+
+            // the knight's helmet, jammed on its head
+            var headC = thorax + new Vector2(24f + (pose == 8 ? 6f : 0f), 10f + rear * 0.5f);
+            p.Ellipse(headC.x, headC.y, 13f, 12f, (nx, ny) => -nx * 0.4f + ny * 0.6f > 0.45f ? steelLight : ny < -0.5f ? Shade(steel, 0.7f) : steel);
+            p.Rect((int)headC.x - 2, (int)headC.y - 1, 14, 3, Hex("#1A0E22"));       // visor slit
+            p.Rect((int)headC.x + 2, (int)headC.y - 1, 8, 2, vein);                   // glowing eyes behind it
+            p.Line(headC.x - 6, headC.y + 12, headC.x - 2, headC.y + 20, Hex("#B83A3A"), 2); // the plume, torn
+            // mouth: mandibles under the helmet, open to spit
+            float open = pose == 8 ? 6f : 2f;
+            p.Line(headC.x + 6, headC.y - 10, headC.x + 14, headC.y - 12 - open, boneDark, 2);
+            p.Line(headC.x + 6, headC.y - 12, headC.x + 13, headC.y - 16 + open * 0.4f, boneDark, 2);
+            if (pose == 8) p.Ellipse(headC.x + 15f, headC.y - 14f, 3f, 3f, (a, b) => Hex("#9CFF7A"));
+
+            p.Outline(Ink);
+            return p;
+        }
+
+        static Px[] ParasiteFrames() => Enumerable.Range(0, 9).Select(DrawParasite).ToArray();
+
+        /// <summary>The throne (64x80, pivot bottom middle).</summary>
+        static Px Throne()
+        {
+            var p = new Px(64, 80);
+            var stone = Hex("#3A3044");
+            var stoneLight = Hex("#5A4C6A");
+            var gold = Hex("#D8A84A");
+            var velvet = Hex("#5A1E3A");
+            p.Rect(8, 0, 48, 10, stone);
+            p.Rect(8, 9, 48, 2, stoneLight);
+            p.Rect(14, 10, 36, 62, stone);
+            p.Rect(16, 12, 32, 56, velvet);
+            p.Rect(18, 14, 28, 52, Shade(velvet, 1.25f));
+            for (int x = 14; x < 50; x += 6) p.Rect(x, 72, 4, 8 - Mathf.Abs(x - 32) / 6, stone);
+            p.Rect(12, 70, 40, 2, gold);
+            p.Rect(4, 10, 12, 26, stoneLight);
+            p.Rect(48, 10, 12, 26, stoneLight);
+            p.Rect(4, 34, 12, 2, gold);
+            p.Rect(48, 34, 12, 2, gold);
+            p.Ellipse(32f, 76f, 4f, 4f, (a, b) => gold);
+            p.Rect(31, 60, 2, 8, gold);
+            p.Outline(Ink);
+            return p;
+        }
+
+        /// <summary>Storm sky over the ruined tower: violet clouds, a sickly glow, shattered spires.</summary>
+        static Px StormSky()
+        {
+            const int w = 480, h = 270;
+            var p = new Px(w, h);
+            var top = Hex("#0B0614");
+            var low = Hex("#3A1A3E");
+            for (int y = 0; y < h; y++)
+            {
+                int band = Mathf.FloorToInt(Mathf.Pow(y / (float)h, 0.8f) * 14f);
+                var c = Mix(low, top, band / 14f);
+                for (int x = 0; x < w; x++) p.Set(x, y, c);
+            }
+            // the eye of the storm
+            int ex = 300, ey = 185;
+            for (int r = 110; r > 30; r -= 8) p.Ellipse(ex, ey, r, r * 0.7f, (nx, ny) => new Color32(190, 90, 255, 12), true);
+            p.Ellipse(ex, ey, 26, 26, (nx, ny) => nx * nx + ny * ny < 0.3f ? Hex("#F4D8FF") : Hex("#B46BFF"));
+            // swirling clouds
+            for (int y = 70; y < h; y++)
+            for (int x = 0; x < w; x++)
+            {
+                float dx = x - ex, dy = (y - ey) * 1.4f;
+                float a = Mathf.Atan2(dy, dx), r = Mathf.Sqrt(dx * dx + dy * dy);
+                float n = Mathf.PerlinNoise(a * 2f + r * 0.02f, r * 0.03f);
+                if (n > 0.58f) p.Blend(x, y, new Color32(120, 60, 150, (byte)((n - 0.58f) * 400f)));
+            }
+            // broken spires
+            var dark = Hex("#07040C");
+            for (int x = 0; x < w; x++)
+            {
+                int hgt = 40 + (int)(Mathf.PerlinNoise(x * 0.025f, 9.1f) * 30f);
+                for (int y = 0; y < hgt; y++) p.Set(x, y, dark);
+            }
+            for (int i = 0; i < 7; i++)
+            {
+                int tx = 30 + i * 66 + (int)(Hash(i, 0, 751) * 20f), tw = 8 + (int)(Hash(i, 1, 751) * 8f), th = 80 + (int)(Hash(i, 2, 751) * 70f);
+                p.Rect(tx, 0, tw, th, dark);
+                for (int k = 0; k < tw; k++) p.Rect(tx + k, th, 1, (int)(Hash(k, i, 752) * 12f), dark); // shattered tops
+            }
+            return p;
         }
 
         static Px[] AcidFrames()
@@ -1254,6 +2239,214 @@ namespace PixelStudy.EditorTools
             return p;
         }
 
+        /// <summary>
+        /// Flame Slash's arc of fire, left along the path of the rising swing (facing +x): it starts low
+        /// in front (tail, thin and red) and sweeps up over the head (head, thick and white-hot), with
+        /// flame tongues licking off the outer edge. Pivot at (50, 62), the center of the swing.
+        /// </summary>
+        static Px FireArc(int seed, float reveal = 1f)
+        {
+            const int size = 160;
+            const float cx = 50f, cy = 62f, R = 70f, from = -40f, to = 118f;
+            var p = new Px(size, size);
+            for (int y = 0; y < size; y++)
+            for (int x = 0; x < size; x++)
+            {
+                float dx = x + 0.5f - cx, dy = y + 0.5f - cy;
+                float r = Mathf.Sqrt(dx * dx + dy * dy);
+                float ang = Mathf.Atan2(dy, dx) * Mathf.Rad2Deg;
+                if (ang < from || ang > from + (to - from) * reveal) continue;
+                // 0 tail .. 1 head; while the swing is still pouring it out, the head is wherever the blade is now
+                float along = (ang - from) / ((to - from) * reveal);
+                float thick = 9f + 27f * Mathf.Pow(along, 1.15f);
+                if (along > 0.95f) thick *= 1f - (along - 0.95f) / 0.05f * 0.5f; // rounded head
+                float inner = R - thick;
+
+                // flame tongues: pointed licks along the outer edge, longer toward the head
+                float segment = ang / 7f;
+                int s = Mathf.FloorToInt(segment);
+                float u = segment - s;
+                float tongueLen = (5f + 15f * along) * (0.35f + 0.65f * Hash(s, seed, 410)) * Mathf.Clamp01(along * 4f);
+                float tongue = Mathf.Pow(1f - Mathf.Abs(2f * u - 1f), 1.6f) * tongueLen;
+                float outer = R + tongue;
+                if (r < inner - 3f || r > outer) continue;
+
+                float heat;
+                if (r <= R)
+                {
+                    // hottest just inside the blade's path, cooling toward the inside of the arc
+                    float k = (R - 3f - r) / Mathf.Max(1f, thick);
+                    heat = 1f - Mathf.Abs(k) * 0.95f;
+                    if (r < inner) heat = 0.1f * (1f - (inner - r) / 3f);
+                }
+                else heat = 0.62f * (1f - (r - R) / Mathf.Max(1f, tongue));
+                heat *= 0.5f + 0.55f * along;
+                heat += (Hash(x, y, 411 + seed) - 0.5f) * 0.14f;
+                var c = FireColor(heat);
+                if (c.a > 0) p.Set(x, y, c);
+            }
+            // loose wisps of flame drifting off the top of the arc
+            for (int i = 0; i < 9 * reveal; i++)
+            {
+                float a = Mathf.Lerp(from + 40f, from + (to - from) * reveal - 5f, Hash(i, seed, 412)) * Mathf.Deg2Rad;
+                float rr = R + 12f + Hash(seed, i, 413) * 14f;
+                float wx = cx + Mathf.Cos(a) * rr, wy = cy + Mathf.Sin(a) * rr;
+                float wr = 1.5f + Hash(i, i, 414 + seed) * 2f;
+                p.Ellipse(wx, wy, wr, wr * 1.4f, (nx, ny) => FireColor(0.75f - (nx * nx + ny * ny) * 0.5f), true);
+            }
+            return p;
+        }
+
+        /// <summary>3 frames of the fire pouring out along the swing, then 4 flickering frames of the full arc.</summary>
+        static Px[] FireArcFrames() => new[] { FireArc(5, 0.4f), FireArc(6, 0.7f), FireArc(7, 0.9f), FireArc(1), FireArc(2), FireArc(3), FireArc(4) };
+
+        /// <summary>Repaints fire frames as corrupted violet fire: the same shapes, brightness mapped onto a violet ramp.</summary>
+        static Px[] VoidFire(Px[] frames)
+        {
+            var ramp = new[]
+            {
+                (0f, new Color(0.1f, 0.02f, 0.16f)),
+                (0.35f, new Color(0.4f, 0.1f, 0.7f)),
+                (0.65f, new Color(0.7f, 0.35f, 1f)),
+                (1f, new Color(1f, 0.92f, 1f)),
+            };
+            foreach (var f in frames)
+                for (int i = 0; i < f.C.Length; i++)
+                {
+                    var c = f.C[i];
+                    if (c.a == 0) continue;
+                    float lum = (0.3f * c.r + 0.59f * c.g + 0.11f * c.b) / 255f;
+                    int k = 1;
+                    while (k < ramp.Length - 1 && lum > ramp[k].Item1) k++;
+                    var (t0, c0) = ramp[k - 1];
+                    var (t1, c1) = ramp[k];
+                    var v = Color.Lerp(c0, c1, Mathf.InverseLerp(t0, t1, lum));
+                    f.C[i] = new Color32((byte)(v.r * 255f), (byte)(v.g * 255f), (byte)(v.b * 255f), c.a);
+                }
+            return frames;
+        }
+
+        /// <summary>A blob of burning fire flying toward +x (head at the pivot, tail streaming behind).</summary>
+        static Px[] FireGlobFrames()
+        {
+            var frames = new Px[4];
+            for (int f = 0; f < 4; f++)
+            {
+                var p = new Px(18, 14);
+                const float hx = 12f, hy = 7f;
+                for (int y = 0; y < 14; y++)
+                for (int x = 0; x < 18; x++)
+                {
+                    float dx = x + 0.5f - hx, dy = y + 0.5f - hy;
+                    float heat;
+                    if (dx >= 0f)
+                    {
+                        float d = Mathf.Sqrt(dx * dx + dy * dy) / 4.2f;
+                        if (d > 1f) continue;
+                        heat = 1f - d * 0.85f;
+                    }
+                    else
+                    {
+                        // tail: narrows and cools behind the head, wavering per frame
+                        float back = -dx / 7f;
+                        if (back > 1f) continue;
+                        float half = 4.2f * (1f - back) + Mathf.Sin(back * 9f + f * 1.7f) * 0.8f * back;
+                        float off = Mathf.Abs(dy + Mathf.Sin(back * 6f + f) * back * 1.5f);
+                        if (off > half) continue;
+                        heat = (1f - off / Mathf.Max(0.5f, half)) * (1f - back * 0.75f) * 0.9f;
+                    }
+                    heat += (Hash(x, y, 420 + f) - 0.5f) * 0.15f;
+                    var c = FireColor(heat);
+                    if (c.a > 0) p.Set(x, y, c);
+                }
+                frames[f] = p;
+            }
+            return frames;
+        }
+
+        /// <summary>A small patch of fire burning on the floor (pivot at the bottom middle).</summary>
+        static Px[] GroundFireFrames()
+        {
+            var frames = new Px[4];
+            for (int f = 0; f < 4; f++)
+            {
+                var p = new Px(22, 26);
+                // three licks of flame of different heights, swaying per frame
+                float[] centers = { 6f, 11f, 16f };
+                float[] heights = { 15f, 23f, 17f };
+                for (int k = 0; k < 3; k++)
+                {
+                    float h = heights[k] * (0.85f + 0.15f * Mathf.Sin(f * 1.6f + k * 2.1f));
+                    for (int y = 0; y < 26; y++)
+                    for (int x = 0; x < 22; x++)
+                    {
+                        float t = y / h;
+                        if (t > 1f) continue;
+                        float sway = Mathf.Sin(y * 0.45f + f * 1.6f + k) * t * 1.6f;
+                        float half = (k == 1 ? 4.6f : 3.6f) * (1f - t * t) + 0.4f;
+                        float dx = Mathf.Abs(x + 0.5f - centers[k] - sway);
+                        if (dx > half) continue;
+                        float heat = (1f - dx / half) * (1f - t * 0.75f);
+                        heat += (Hash(x, y, 430 + f + k * 7) - 0.5f) * 0.12f;
+                        var c = FireColor(heat);
+                        if (c.a == 0) continue;
+                        var old = p.Get(x, y);
+                        if (old.a == 0 || c.r + c.g > old.r + old.g) p.Set(x, y, c); // keep the hotter color where licks overlap
+                    }
+                }
+                // glowing coals along the bottom
+                for (int x = 2; x < 20; x++)
+                    if (p.Get(x, 0).a == 0) p.Set(x, 0, Hash(x, f, 431) < 0.5f ? Hex("#E0401C") : Hex("#8A1E10"));
+                frames[f] = p;
+            }
+            return frames;
+        }
+
+        /// <summary>The crimson flask the knight drinks from (pivot at its middle).</summary>
+        static Px FlaskSprite()
+        {
+            var p = new Px(10, 14);
+            var glass = Hex("#C9D6E6");
+            var red = Hex("#D7263D");
+            var redLight = Hex("#FF5A5F");
+            var redDark = Hex("#7E1020");
+            var cork = Hex("#8A5A2E");
+            p.Ellipse(5f, 4.5f, 4.5f, 4.5f, (nx, ny) => ny > 0.35f ? glass : nx < -0.3f && ny > -0.2f ? redLight : ny < -0.5f ? redDark : red);
+            p.Rect(3, 8, 4, 3, glass);
+            p.Rect(4, 8, 2, 2, red);
+            p.Rect(3, 11, 4, 2, cork);
+            p.Set(2, 5, Color.white);
+            p.Outline(Ink);
+            return p;
+        }
+
+        /// <summary>HUD icon: the crimson flask, bigger, with a warm glow.</summary>
+        static Px FlaskIcon()
+        {
+            var p = new Px(24, 24);
+            var glass = Hex("#D8E2F0");
+            var glassDark = Hex("#8C9AB0");
+            var red = Hex("#D7263D");
+            var redLight = Hex("#FF6B6B");
+            var redDark = Hex("#7E1020");
+            var cork = Hex("#9C6A38");
+            var corkDark = Hex("#6B4422");
+            p.Ellipse(12f, 8.5f, 8f, 8f, (nx, ny) =>
+                ny > 0.45f ? (nx > 0.4f ? glassDark : glass) :
+                nx < -0.35f && ny > -0.3f ? redLight : ny < -0.55f || nx > 0.6f ? redDark : red);
+            p.Rect(9, 15, 6, 4, glass);
+            p.Rect(13, 15, 2, 4, glassDark);
+            p.Rect(10, 15, 4, 1, red);
+            p.Rect(8, 19, 8, 3, cork);
+            p.Rect(8, 19, 8, 1, corkDark);
+            // shine
+            p.Set(7, 11, Color.white);
+            p.Set(6, 10, Color.white);
+            p.Set(6, 9, Hex("#FFD0D0"));
+            p.Outline(Ink);
+            return p;
+        }
+
         static Px FlameSlashIcon()
         {
             var p = new Px(24, 24);
@@ -1284,6 +2477,97 @@ namespace PixelStudy.EditorTools
             p.Line(1, 1, 5, 5, Hex("#6B4A24"), 2);
             p.Set(1, 1, gold);
             p.Outline(Ink);
+            return p;
+        }
+
+        // =====================================================================
+        // Sword combat: smear trails for the 3 slashes, the heavy stab
+        // =====================================================================
+
+        /// <summary>
+        /// Sword smear: a crescent swept from tailDeg to headDeg around (cx, cy) (degrees, counter-clockwise
+        /// from +x; a negative sweep swings clockwise). Thick and bright at the head (where the blade is now),
+        /// thin and fading toward the tail.
+        /// </summary>
+        static Px Smear(int size, float cx, float cy, float outer, float tailDeg, float headDeg, float maxThick,
+            Color32 edge, Color32 mid, Color32 inner, int seed)
+        {
+            var p = new Px(size, size);
+            float span = Mathf.Abs(headDeg - tailDeg);
+            bool clockwise = headDeg < tailDeg;
+            for (int y = 0; y < size; y++)
+            for (int x = 0; x < size; x++)
+            {
+                float dx = x + 0.5f - cx, dy = y + 0.5f - cy;
+                float r = Mathf.Sqrt(dx * dx + dy * dy);
+                float ang = Mathf.Atan2(dy, dx) * Mathf.Rad2Deg;
+                float travelled = clockwise ? Mathf.Repeat(tailDeg - ang, 360f) : Mathf.Repeat(ang - tailDeg, 360f);
+                if (travelled > span) continue;
+                float along = travelled / span; // 0 tail .. 1 head
+                float thick = maxThick * (0.12f + 0.88f * Mathf.Pow(along, 1.3f));
+                if (along > 0.94f) thick *= 1f - (along - 0.94f) / 0.06f * 0.45f; // rounded head
+                if (r > outer || r < outer - thick) continue;
+                float k = (outer - r) / Mathf.Max(1f, thick); // 0 outer edge .. 1 inner edge
+                float a = Mathf.Clamp01(along * 1.7f);
+                Color32 c = k < 0.22f ? edge : k < 0.58f ? mid : inner;
+                if (k >= 0.4f && Hash((int)(travelled * 0.7f), 0, seed) < 0.3f) c = mid; // speed streaks
+                c.a = (byte)(c.a * a);
+                p.Set(x, y, c);
+            }
+            return p;
+        }
+
+        static readonly Color32 SmearEdge = new Color32(255, 255, 255, 255);
+        static readonly Color32 SmearMid = new Color32(200, 236, 255, 235);
+        static readonly Color32 SmearInner = new Color32(110, 175, 235, 150);
+
+        /// <summary>Slash 1: diagonal down-swing from behind the head to low in front.</summary>
+        static Px SmearDiagonal() => Smear(112, 44f, 56f, 46f, 118f, -38f, 15f, SmearEdge, SmearMid, SmearInner, 701);
+
+        /// <summary>Slash 2: rising uppercut from low in front up over the head.</summary>
+        static Px SmearRising() => Smear(112, 44f, 56f, 46f, -58f, 98f, 14f, SmearEdge, SmearMid, SmearInner, 702);
+
+        /// <summary>Slash 3: big overhead cleave that comes down into the ground in front (warmer, it's the finisher).</summary>
+        static Px SmearCleave() => Smear(144, 56f, 66f, 60f, 165f, -78f, 21f, SmearEdge,
+            new Color32(255, 236, 190, 240), new Color32(255, 180, 90, 160), 703);
+
+        /// <summary>Heavy stab: a long streak of light, thin at the hand and bright at the point (pivot at the hand).</summary>
+        static Px ThrustStreak()
+        {
+            var p = new Px(128, 24);
+            for (int x = 0; x < 128; x++)
+            {
+                float t = x / 127f;
+                float half = t < 0.88f ? 1f + 7f * t : 8f * (1f - (t - 0.88f) / 0.12f); // widens, then comes to a point
+                for (int y = 0; y < 24; y++)
+                {
+                    float d = Mathf.Abs(y + 0.5f - 12f);
+                    if (d > half) continue;
+                    float k = d / Mathf.Max(1f, half);
+                    byte a = (byte)(255 * Mathf.Clamp01(t * 2.2f));
+                    Color32 c = k < 0.3f ? new Color32(255, 255, 255, a) : k < 0.7f ? new Color32(255, 240, 200, (byte)(a * 0.85f)) : new Color32(255, 190, 110, (byte)(a * 0.5f));
+                    if (k > 0.5f && Hash(x / 6, y, 710) < 0.25f) c.a = (byte)(c.a * 0.5f);
+                    p.Set(x, y, c);
+                }
+            }
+            return p;
+        }
+
+        /// <summary>Four-point impact star (stab on a stunned bug).</summary>
+        static Px ImpactStar()
+        {
+            var p = new Px(48, 48);
+            for (int y = 0; y < 48; y++)
+            for (int x = 0; x < 48; x++)
+            {
+                float dx = Mathf.Abs(x + 0.5f - 24f), dy = Mathf.Abs(y + 0.5f - 24f);
+                float star = Mathf.Min(dx * 0.22f + dy, dy * 0.22f + dx); // thin cross
+                float diag = Mathf.Abs(dx - dy) + (dx + dy) * 0.35f;     // short diagonal rays
+                float v = Mathf.Min(star / 4f, diag / 6f);
+                if (v > 1f) continue;
+                byte a = (byte)(255 * (1f - v));
+                p.Set(x, y, v < 0.45f ? new Color32(255, 255, 255, a) : new Color32(255, 220, 150, a));
+            }
             return p;
         }
 
@@ -1322,53 +2606,138 @@ namespace PixelStudy.EditorTools
             return p;
         }
 
-        static Px[] TornadoFrames()
+        /// <summary>Thousand Cuts: a razor-thin cut line, bright in the middle and tapering to points (pivot in the middle).</summary>
+        static Px CutLine()
         {
-            var frames = new Px[4];
-            var light = Hex("#E8F4F8", 235);
-            var mid = Hex("#A8D4E2", 220);
-            var dark = Hex("#6C8FA6", 210);
-            var edge = Hex("#3C5468", 230);
-            for (int f = 0; f < 4; f++)
+            var p = new Px(160, 8);
+            for (int x = 0; x < 160; x++)
             {
-                var p = new Px(60, 92);
-                for (int y = 0; y < 92; y++)
+                float t = Mathf.Abs(x + 0.5f - 80f) / 80f; // 0 middle .. 1 tips
+                float half = 3.6f * (1f - t * t);
+                for (int y = 0; y < 8; y++)
                 {
-                    float t = y / 91f;
-                    float half = 3f + Mathf.Pow(t, 1.25f) * 25f;
-                    float cx = 30f + Mathf.Sin(y * 0.11f + f * 1.57f) * 4f * t;
-                    for (int x = 0; x < 60; x++)
+                    float d = Mathf.Abs(y + 0.5f - 4f);
+                    if (d > half) continue;
+                    float k = d / Mathf.Max(0.5f, half);
+                    byte a = (byte)(255 * Mathf.Clamp01((1f - t) * 1.6f));
+                    p.Set(x, y, k < 0.35f ? new Color32(255, 255, 255, a) : new Color32(160, 225, 255, (byte)(a * 0.75f)));
+                }
+            }
+            return p;
+        }
+
+        /// <summary>A rune circle (Arcane Orbs, Riposte's ward, orb bursts): two rings, runes between them, a star inside. White, tinted in code.</summary>
+        static Px MagicCircle()
+        {
+            const int size = 96;
+            const float c = 48f;
+            var p = new Px(size, size);
+            for (int y = 0; y < size; y++)
+            for (int x = 0; x < size; x++)
+            {
+                float dx = x + 0.5f - c, dy = y + 0.5f - c;
+                float r = Mathf.Sqrt(dx * dx + dy * dy);
+                float ang = Mathf.Atan2(dy, dx);
+                byte a = 0;
+                if (Mathf.Abs(r - 45f) < 1.2f || Mathf.Abs(r - 33f) < 1f) a = 255;          // outer and inner rings
+                else if (Mathf.Abs(r - 42f) < 0.6f) a = 150;                                  // thin ring inside the outer one
+                else if (r > 34.5f && r < 41f)
+                {
+                    // runes: little blocky glyphs around the band
+                    int seg = Mathf.FloorToInt((ang + Mathf.PI) / (Mathf.PI * 2f) * 28f);
+                    float u = (ang + Mathf.PI) / (Mathf.PI * 2f) * 28f - seg;
+                    float v = (r - 34.5f) / 6.5f;
+                    int gx = Mathf.FloorToInt(u * 3f), gy = Mathf.FloorToInt(v * 3f);
+                    if (u > 0.15f && u < 0.85f && Hash(seg * 9 + gx * 3 + gy, 0, 600) < 0.55f) a = 210;
+                }
+                if (a > 0) p.Set(x, y, new Color32(255, 255, 255, a));
+            }
+            // a six-pointed star inside
+            for (int k = 0; k < 2; k++)
+            for (int i = 0; i < 3; i++)
+            {
+                float a0 = (k * 60f + i * 120f + 90f) * Mathf.Deg2Rad, a1 = (k * 60f + (i + 1) * 120f + 90f) * Mathf.Deg2Rad;
+                p.Line(c + Mathf.Cos(a0) * 32f, c + Mathf.Sin(a0) * 32f, c + Mathf.Cos(a1) * 32f, c + Mathf.Sin(a1) * 32f, new Color32(255, 255, 255, 230));
+            }
+            p.Ellipse(c, c, 5f, 5f, (nx, ny) => new Color32(255, 255, 255, 180));
+            return p;
+        }
+
+        /// <summary>Cracks splitting out across the floor from an impact (pivot at the bottom middle).</summary>
+        static Px GroundCrack()
+        {
+            var p = new Px(96, 24);
+            var dark = Hex("#0E0C14");
+            var glow = Hex("#BFEAFF", 220);
+            for (int s = 0; s < 7; s++)
+            {
+                float dir = s < 3 ? -1f : s < 6 ? 1f : 0f;
+                float x = 48f, y = 1f;
+                float ax = dir * (6f + Hash(s, 0, 610) * 7f), ay = 1.2f + Hash(s, 1, 611) * 2.5f;
+                if (dir == 0f) { ax = (Hash(s, 2, 612) - 0.5f) * 3f; ay = 4f; }
+                for (int k = 0; k < 6; k++)
+                {
+                    float nx = x + ax * (0.6f + Hash(s, k, 613)), ny = y + ay * (0.5f + Hash(k, s, 614));
+                    p.Line(x, y, nx, ny, dark, k < 2 ? 2 : 1);
+                    p.Line(x, y + 1, nx, ny + 1, glow);
+                    x = nx;
+                    y = ny;
+                    if (y > 22f || x < 1f || x > 94f) break;
+                }
+            }
+            // chips of stone thrown up
+            for (int i = 0; i < 8; i++)
+                p.Rect((int)(30 + Hash(i, 3, 615) * 36), (int)(6 + Hash(i, 4, 616) * 14), 2, 2, Hash(i, 5, 617) < 0.5f ? Hex("#62748A") : Hex("#8196AD"));
+            return p;
+        }
+
+        /// <summary>A scorched patch on the floor where lightning hit (pivot in the middle).</summary>
+        static Px Scorch()
+        {
+            var p = new Px(64, 14);
+            p.Ellipse(32f, 7f, 31f, 6.5f, (nx, ny) =>
+            {
+                float d = Mathf.Sqrt(nx * nx + ny * ny);
+                byte a = (byte)(230 * Mathf.Clamp01((1f - d) * 2.2f));
+                return d < 0.35f ? new Color32(20, 16, 24, a) : new Color32(30, 26, 34, (byte)(a * 0.8f));
+            });
+            // glowing embers in the char
+            for (int i = 0; i < 12; i++)
+            {
+                float a = Hash(i, 0, 620) * Mathf.PI * 2f, r = Hash(i, 1, 621) * 0.8f;
+                p.Set(Mathf.RoundToInt(32f + Mathf.Cos(a) * r * 28f), Mathf.RoundToInt(7f + Mathf.Sin(a) * r * 5f), Hash(i, 2, 622) < 0.5f ? Hex("#BFEAFF") : Hex("#6FB8FF"));
+            }
+            return p;
+        }
+
+        /// <summary>Thousand Cuts icon: three bright cuts slashed across the frame.</summary>
+        static Px IconThousandCuts()
+        {
+            var p = new Px(24, 24);
+            void Cut(float x0, float y0, float x1, float y1)
+            {
+                int steps = 40;
+                for (int i = 0; i <= steps; i++)
+                {
+                    float t = i / (float)steps;
+                    float w = Mathf.Sin(Mathf.PI * t) * 1.6f;
+                    float x = Mathf.Lerp(x0, x1, t), y = Mathf.Lerp(y0, y1, t);
+                    for (int dx = -2; dx <= 2; dx++)
+                    for (int dy = -2; dy <= 2; dy++)
                     {
-                        float u = (x + 0.5f - cx) / half; // -1..1 across the funnel
-                        if (Mathf.Abs(u) > 1f) continue;
-                        // diagonal bands that scroll every frame = spinning
-                        float band = Mathf.Repeat(u * 2.2f + y * 0.09f - f * 0.5f, 3f);
-                        Color32 c = band < 1f ? light : band < 2f ? mid : dark;
-                        if (Mathf.Abs(u) > 0.86f) c = edge;
-                        if (Hash(x, y, 520 + f) < 0.05f) c = light;
-                        p.Set(x, y, c);
+                        float d = Mathf.Sqrt(dx * dx + dy * dy);
+                        if (d > w + 0.4f) continue;
+                        var old = p.Get((int)x + dx, (int)y + dy);
+                        var c = d < w * 0.5f ? Hex("#FFFFFF") : Hex("#8FD8FF");
+                        if (old.a == 0 || c.r > old.r) p.Set((int)x + dx, (int)y + dy, c);
                     }
                 }
-                // debris whirling around it
-                for (int d = 0; d < 9; d++)
-                {
-                    float a = Hash(d, 0, 530) * Mathf.PI * 2f + f * 1.57f;
-                    int dy = 8 + (int)(Hash(d, 1, 531) * 76f);
-                    float rad = 6f + dy * 0.28f;
-                    int dx = Mathf.RoundToInt(30f + Mathf.Cos(a) * rad);
-                    p.Rect(dx, dy, 2, 2, Hash(d, 2, 532) < 0.5f ? Hex("#7E705F") : Hex("#5C6672"));
-                }
-                // electric crackle
-                for (int z = 0; z < 3; z++)
-                {
-                    int zy = 20 + (int)(Hash(z, f, 540) * 60f);
-                    int zx = 30 + (int)((Hash(f, z, 541) - 0.5f) * 20f);
-                    p.Line(zx, zy, zx + 3, zy + 3, Hex("#FFFFFF"));
-                    p.Line(zx + 3, zy + 3, zx + 1, zy + 6, Hex("#9FE8FF"));
-                }
-                frames[f] = p;
             }
-            return frames;
+            Cut(2f, 18f, 21f, 4f);
+            Cut(3f, 6f, 22f, 19f);
+            Cut(1f, 12f, 23f, 11f);
+            p.Outline(Ink);
+            return p;
         }
 
         /// <summary>A small horizontal lightning arc (pivot at the left end), stretched between two points.</summary>
@@ -1501,28 +2870,6 @@ namespace PixelStudy.EditorTools
             return p;
         }
 
-        static Px IconTornado()
-        {
-            var p = new Px(24, 24);
-            for (int y = 2; y < 23; y++)
-            {
-                float t = (y - 2) / 20f;
-                float half = 1.5f + t * 8.5f;
-                float cx = 12f + Mathf.Sin(y * 0.5f) * 1.5f * t;
-                for (int x = 0; x < 24; x++)
-                {
-                    float u = (x + 0.5f - cx) / half;
-                    if (Mathf.Abs(u) > 1f) continue;
-                    float band = Mathf.Repeat(u * 1.6f + y * 0.35f, 2f);
-                    p.Set(x, y, band < 1f ? Hex("#E8F4F8") : Hex("#8FB6CC"));
-                }
-            }
-            p.Line(15, 12, 18, 15, Hex("#FFE66B"));
-            p.Line(18, 15, 16, 17, Hex("#FFE66B"));
-            p.Outline(Ink);
-            return p;
-        }
-
         static Px IconOrbs()
         {
             var p = new Px(24, 24);
@@ -1597,78 +2944,146 @@ namespace PixelStudy.EditorTools
             return p;
         }
 
-        // =====================================================================
-        // Mockup 2: rough prototype art (flat colors, no texture, no shading, choppy animation)
-        // =====================================================================
-
-        /// <summary>Mockup 2 uses rough greybox art for the map and the bugs. Set to true for the finished art.</summary>
-        public static readonly bool Polished = false;
-
-        /// <summary>Flat block with a 1px grid line on its left and bottom edges (optionally a flat strip on top).</summary>
-        static Px RoughBlock(Color32 fill, Color32 grid, Color32 strip = default, int stripDepth = 0)
+        /// <summary>Heavenfall: a sword of light falling point-first out of a burst of rays.</summary>
+        static Px IconHeavenfall()
         {
-            var p = new Px(32, 32);
-            for (int y = 0; y < 32; y++)
-            for (int x = 0; x < 32; x++)
-                p.Set(x, y, y >= 32 - stripDepth ? strip : x == 0 || y == 0 ? grid : fill);
+            var p = new Px(24, 24);
+            var ray = Hex("#FFD86B");
+            var rayDim = Hex("#C9902E");
+            // rays bursting from where the point lands
+            for (int i = 0; i < 9; i++)
+            {
+                float a = (200f + i * 17.5f) * Mathf.Deg2Rad;
+                var d = new Vector2(Mathf.Cos(a), Mathf.Sin(a));
+                var from = new Vector2(12f, 4f) - d * 3f;
+                var to = new Vector2(12f, 4f) - d * (i % 2 == 0 ? 11f : 8f);
+                p.Line(from.x, from.y, to.x, to.y, i % 2 == 0 ? ray : rayDim);
+            }
+            // the blade, point down
+            var white = Hex("#FFFFFF");
+            var pale = Hex("#FFF2C2");
+            var gold = Hex("#F2C14E");
+            for (int y = 3; y <= 17; y++)
+            {
+                int half = y < 6 ? (y - 3) / 2 : 2;
+                for (int x = 12 - half; x <= 12 + half; x++) p.Set(x, y, x == 12 ? white : pale);
+            }
+            p.Rect(7, 17, 11, 2, gold);                  // crossguard
+            p.Set(7, 19, gold); p.Set(17, 19, gold);
+            p.Rect(11, 19, 3, 3, Hex("#B8862E"));        // grip
+            p.Rect(11, 22, 3, 2, white);                 // pommel
+            p.Set(12, 1, white); p.Set(12, 2, white);    // the glint at the point
+            p.Set(11, 1, ray); p.Set(13, 1, ray);
+            p.Outline(Ink);
             return p;
         }
 
-        static Px RoughGround(bool top) => RoughBlock(Hex("#56616E"), Hex("#454E59"), Hex("#4E8A3C"), top ? 5 : 0);
-
-        static Px RoughWall() => RoughBlock(Hex("#1F2833"), Hex("#19212A"));
-
-        static Px RoughPlatform()
+        /// <summary>The Reaper Mantis's huge crescent moon (72x72), rising behind it for its execution.</summary>
+        static Px MoonCrescent()
         {
-            var p = new Px(32, 32);
-            for (int y = 23; y < 32; y++)
-            for (int x = 0; x < 32; x++)
-                p.Set(x, y, y == 23 || x == 0 ? Hex("#5A4B3A") : Hex("#7A6A55"));
+            const int s = 72;
+            var p = new Px(s, s);
+            var lit = Hex("#EFFFF3");
+            var mid = Hex("#CFF5DA");
+            var rim = Hex("#8FE0A8");
+            var crater = Hex("#B6E8C4");
+            for (int y = 0; y < s; y++)
+            for (int x = 0; x < s; x++)
+            {
+                float dx = x + 0.5f - 36f, dy = y + 0.5f - 36f;
+                float d = Mathf.Sqrt(dx * dx + dy * dy);
+                if (d > 33f) continue;
+                // bite out of the right side
+                float bx = x + 0.5f - 50f, by = y + 0.5f - 42f;
+                if (bx * bx + by * by < 29f * 29f) continue;
+                var c = d > 31f ? rim : d > 26f ? mid : lit;
+                if (Hash(x / 3, y / 3, 77) > 0.86f && d < 28f) c = crater;
+                p.Set(x, y, c);
+            }
             return p;
         }
 
-        /// <summary>Same frame size and layout as the finished beetle: walk 0-3 (only two poses), tell 4, lunge 5.</summary>
-        static Px[] RoughBeetleFrames()
+        /// <summary>The colossal sword of light, pointing down (28x120, tip at the bottom middle).</summary>
+        static Px HolyBlade()
         {
-            var frames = new Px[6];
-            var shell = Hex("#B5452E");
-            var head = Hex("#5A3426");
-            var leg = Hex("#3A2418");
-            for (int f = 0; f < 6; f++)
+            const int w = 28, h = 120;
+            var p = new Px(w, h);
+            var white = Hex("#FFFFFF");
+            var pale = Hex("#FFF4CF");
+            var gold = Hex("#FFD36A");
+            var deep = Hex("#E0A43A");
+            var glow = new Color32(255, 214, 120, 110);
+            const float cx = 13.5f;
+            // blade: tapers to the point, a bright fuller down the middle
+            for (int y = 0; y < 88; y++)
             {
-                var p = new Px(46, 28);
-                int lift = f == 4 ? 2 : 0;
-                int lean = f == 5 ? 3 : 0;
-                bool stepA = f % 2 == 0;
-                foreach (int lx in new[] { 12, 19, 26 })
-                    p.Line(lx + lean, 9 + lift, lx + lean + (stepA ? -2 : 2), 0, leg, 2);
-                p.Ellipse(19f + lean, 10f + lift, 14f, 10f, (nx, ny) => ny < -0.1f ? Clear : shell);
-                p.Rect(31 + lean, 6 + lift, 8, 7, head);
-                p.Rect(36 + lean, 9 + lift, 2, 2, Hex("#FFE066"));
-                frames[f] = p;
+                float half = y < 22 ? Mathf.Lerp(0.6f, 6.5f, y / 22f) : 6.5f;
+                for (int x = 0; x < w; x++)
+                {
+                    float d = Mathf.Abs(x + 0.5f - cx);
+                    if (d > half + 2f) continue;
+                    if (d > half) { p.Set(x, y, glow); continue; }
+                    var c = d < 1f ? white : d > half - 1.2f ? gold : pale;
+                    if (d >= 1.5f && d < 2.6f && y > 26 && y < 84) c = (y / 3) % 4 == 0 ? deep : gold; // runes in the fuller
+                    p.Set(x, y, c);
+                }
             }
-            return frames;
+            // crossguard, wings swept up
+            for (int x = 0; x < w; x++)
+            {
+                float d = Mathf.Abs(x + 0.5f - cx);
+                int lift = Mathf.RoundToInt(d * d / 40f);
+                for (int y = 88 + lift; y < 94 + lift && y < h; y++) p.Set(x, y, y == 93 + lift ? white : y == 88 + lift ? deep : gold);
+            }
+            // grip and pommel
+            for (int y = 94; y < 110; y++)
+            for (int x = 11; x < 17; x++)
+                p.Set(x, y, (y % 3 == 0) ? deep : Hex("#C8913A"));
+            p.Ellipse(cx, 114f, 5f, 5f, (nx, ny) => nx * nx + ny * ny < 0.25f ? white : ny > 0.2f ? pale : gold);
+            return p;
         }
 
-        /// <summary>Same frame size as the finished wasp: three wing positions.</summary>
-        static Px[] RoughWaspFrames()
+        /// <summary>A spear of light, pointing down (10x56, tip at the bottom middle), its tail fading out.</summary>
+        static Px LightSpear()
         {
-            var frames = new Px[3];
-            var yellow = Hex("#F2C14E");
-            var dark = Hex("#3A2A1A");
-            for (int f = 0; f < 3; f++)
+            const int w = 10, h = 56;
+            var p = new Px(w, h);
+            for (int y = 0; y < h; y++)
             {
-                var p = new Px(36, 30);
-                p.Line(17, 9, 16, 4, dark, 2);
-                p.Line(22, 9, 23, 4, dark, 2);
-                p.Ellipse(14f, 13f, 9f, 6f, (nx, ny) => Mathf.FloorToInt((nx + 1f) * 2.5f) % 2 == 0 ? yellow : dark);
-                p.Line(5, 12, 1, 11, dark, 2);
-                p.Rect(22, 10, 8, 8, dark);
-                p.Rect(26, 13, 2, 2, Hex("#E04040"));
-                p.Rect(9, f == 0 ? 21 : f == 1 ? 19 : 17, 13, 4, Hex("#CFEEFD", 190));
-                frames[f] = p;
+                float half = y < 10 ? Mathf.Lerp(0.5f, 3.6f, y / 10f) : y < 13 ? 2.2f : 1.4f;
+                byte a = (byte)(255 * Mathf.Clamp01(1.25f - y / (float)h));
+                for (int x = 0; x < w; x++)
+                {
+                    float d = Mathf.Abs(x + 0.5f - 5f);
+                    if (d > half) continue;
+                    Color32 c = d < 0.8f ? new Color32(255, 255, 255, a) : new Color32(255, 214, 110, a);
+                    p.Set(x, y, c);
+                }
             }
-            return frames;
+            return p;
+        }
+
+        /// <summary>A soft vertical beam of light (32x128, bottom middle pivot), brightest in the core, fading out at the top.</summary>
+        static Px LightPillar()
+        {
+            const int w = 32, h = 128;
+            var p = new Px(w, h);
+            for (int y = 0; y < h; y++)
+            {
+                float v = 1f - y / (float)h;
+                float fade = Mathf.Clamp01(v * 1.4f) * (0.85f + 0.15f * Mathf.Clamp01(1f - y / 12f));
+                for (int x = 0; x < w; x++)
+                {
+                    float d = Mathf.Abs(x + 0.5f - 16f) / 16f;
+                    float core = Mathf.Exp(-d * d * 18f);
+                    float halo = Mathf.Exp(-d * d * 4f) * 0.45f;
+                    float a = Mathf.Clamp01((core + halo) * fade);
+                    if (a < 0.02f) continue;
+                    var c = Color.Lerp(new Color(1f, 0.8f, 0.4f), Color.white, core);
+                    p.Set(x, y, new Color32((byte)(c.r * 255f), (byte)(c.g * 255f), (byte)(c.b * 255f), (byte)(a * 255f)));
+                }
+            }
+            return p;
         }
 
         // =====================================================================
@@ -1780,27 +3195,138 @@ namespace PixelStudy.EditorTools
         {
             Directory.CreateDirectory(dir);
 
-            // Mockup 2: only what the basic level needs (greybox tiles, the door, the two bugs, two effects).
-
             // tiles
-            for (int i = 0; i < 3; i++) Single(dir, $"tile_ground_fill_{i}", Polished ? GroundFill(i) : RoughGround(false), new Vector2(0.5f, 0.5f));
-            for (int i = 0; i < 2; i++) Single(dir, $"tile_ground_top_{i}", Polished ? GroundTop(i + 3) : RoughGround(true), new Vector2(0.5f, 0.5f));
-            Single(dir, "tile_ground_under", Polished ? GroundUnder(7) : RoughGround(false), new Vector2(0.5f, 0.5f));
-            for (int i = 0; i < 3; i++) Single(dir, $"tile_platform_{i}", Polished ? Platform(i) : RoughPlatform(), new Vector2(0.5f, 0.5f));
+            for (int i = 0; i < 3; i++) Single(dir, $"tile_ground_fill_{i}", GroundFill(i), new Vector2(0.5f, 0.5f));
+            for (int i = 0; i < 2; i++) Single(dir, $"tile_ground_top_{i}", GroundTop(i + 3), new Vector2(0.5f, 0.5f));
+            Single(dir, "tile_ground_under", GroundUnder(7), new Vector2(0.5f, 0.5f));
+            for (int i = 0; i < 3; i++) Single(dir, $"tile_platform_{i}", Platform(i), new Vector2(0.5f, 0.5f));
+            for (int i = 0; i < 3; i++) Single(dir, $"tile_backwall_{i}", BackWall(i), new Vector2(0.5f, 0.5f));
+            for (int i = 0; i < 2; i++) Single(dir, $"tile_backwall_top_{i}", BackWallTop(i), new Vector2(0.5f, 0.5f));
+            Single(dir, "tile_pillar", Pillar(false), new Vector2(0.5f, 0.5f));
+            Single(dir, "tile_pillar_top", Pillar(true), new Vector2(0.5f, 0.5f));
 
-            // the exit door
+            // backgrounds (16 px per unit: chunkier pixels read as "far away")
+            Single(dir, "bg_far", FarBackground(), new Vector2(0.5f, 0.5f), 16f);
+            Single(dir, "bg_ruins", MidRuins(), new Vector2(0.5f, 0f), 16f);
+            Single(dir, "bg_dusk", SkyDusk(), new Vector2(0.5f, 0.5f), 16f);
+            Single(dir, "bg_moon", SkyMoon(), new Vector2(0.5f, 0.5f), 16f);
+
+            // map props
+            Single(dir, "prop_tomb", Tomb(), new Vector2(0.5f, 0f), PPU);
+            Single(dir, "prop_web", Web(), new Vector2(0f, 1f), PPU);
+            Single(dir, "prop_eggs", EggCluster(), new Vector2(0.5f, 0f), PPU);
+            Single(dir, "prop_honeycomb", Honeycomb(), new Vector2(0.5f, 0.5f), PPU);
+            Single(dir, "prop_hive", HiveChunk(), new Vector2(0.5f, 1f), PPU);
+            Single(dir, "prop_gate", ShrineGate(), new Vector2(0.5f, 0f), PPU);
+            Single(dir, "prop_lantern", Lantern(), new Vector2(0.5f, 1f), PPU);
+            Single(dir, "prop_stalactite", Stalactite(), new Vector2(0.5f, 1f), PPU);
+            Single(dir, "prop_mushrooms", Mushrooms(), new Vector2(0.5f, 0f), PPU);
+            Single(dir, "fx_rock", Rock(), new Vector2(0.5f, 0.5f), PPU);
+
+            // props
+            Single(dir, "prop_torch", TorchBody(), new Vector2(0.5f, 0.5f), 24f);
+            Sheet(dir, "prop_flame", TorchFlames(), new Vector2(0.5f, 0f), 24f);
+            Single(dir, "prop_chain", ChainLink(), new Vector2(0.5f, 1f), PPU, fullRect: true);
+            Single(dir, "prop_banner", Banner(), new Vector2(0.5f, 1f), 16f);
+            Single(dir, "prop_window", Window(), new Vector2(0.5f, 0f), 16f);
+            var tufts = GrassTufts();
+            for (int i = 0; i < tufts.Length; i++) Single(dir, $"prop_grass_{i}", tufts[i], new Vector2(0.5f, 0f), PPU);
+            Single(dir, "prop_bones", Bones(), new Vector2(0.5f, 0f), PPU);
             Single(dir, "door_frame", DoorFrame(), new Vector2(0.5f, 0f), PPU);
             Single(dir, "door_bars", Portcullis(), new Vector2(0.5f, 0f), PPU);
             Sheet(dir, "door_portal", PortalFrames(), new Vector2(0.5f, 0f), PPU);
             Single(dir, "door_arrow", ArrowDown(), new Vector2(0.5f, 0.5f), PPU);
 
             // bugs
-            Sheet(dir, "bug_beetle", Polished ? BeetleFrames(1f, 46, 28, Hex("#B5452E"), Hex("#E07A4F"), Hex("#6E2418"), Hex("#3B2418"), Hex("#FFE066"), false, false) : RoughBeetleFrames(), new Vector2(0.41f, 0f), PPU);
-            Sheet(dir, "bug_wasp", Polished ? WaspFrames() : RoughWaspFrames(), new Vector2(0.5f, 0.5f), PPU);
+            Sheet(dir, "bug_beetle", BeetleFrames(1f, 46, 28, Hex("#B5452E"), Hex("#E07A4F"), Hex("#6E2418"), Hex("#3B2418"), Hex("#FFE066"), false, false), new Vector2(0.41f, 0f), PPU);
+            Sheet(dir, "bug_wasp", WaspFrames(), new Vector2(0.5f, 0.5f), PPU);
+            Sheet(dir, "bug_tick", TickFrames(), new Vector2(0.45f, 0f), PPU);
+            Sheet(dir, "bug_boss", BeetleFrames(2.4f, 112, 76, Hex("#6B2D8C"), Hex("#A35AD1"), Hex("#3A1550"), Hex("#2A1238"), Hex("#FFDD55"), true, true), new Vector2(0.41f, 0f), PPU);
+            Sheet(dir, "fx_acid", AcidFrames(), new Vector2(0.5f, 0.5f), PPU);
+            Sheet(dir, "bug_hornetqueen", HornetQueenFrames(), new Vector2(0.5f, 0.5f), PPU);
+            Sheet(dir, "bug_mantis", MantisFrames(), new Vector2(44f / 104f, 0f), PPU);
+            Single(dir, "fx_stinger", StingerSprite(), new Vector2(0.5f, 0.5f), PPU);
+            Sheet(dir, "fx_poisonsac", PoisonSacFrames(), new Vector2(0.5f, 0.5f), PPU);
+            Single(dir, "fx_scythe", ScytheSlash(), new Vector2(30f / 96f, 0.5f), PPU);
 
-            // effects (jump dust rings, the door's glow)
+            // normal-floor bugs for floors 5-49
+            Sheet(dir, "bug_pillbug", PillBugFrames(), new Vector2(0.48f, 0f), PPU);
+            Sheet(dir, "bug_termite", TermiteFrames(), new Vector2(0.45f, 0f), PPU);
+            Sheet(dir, "bug_scorpion", ScorpionFrames(), new Vector2(0.45f, 0f), PPU);
+            Sheet(dir, "bug_firefly", FireflyFrames(), new Vector2(0.5f, 0.5f), PPU);
+            Sheet(dir, "bug_stag", StagFrames(), new Vector2(0.45f, 0f), PPU);
+
+            // floor 40: the Silk Widow
+            Sheet(dir, "bug_widow", SpiderFrames(3f, Hex("#2A1E2E"), Hex("#4E3E5C"), Hex("#E0283A"), Hex("#FF4A4A"), true, true), new Vector2(0.5f, 0f), PPU);
+            Sheet(dir, "bug_spiderling", SpiderFrames(0.9f, Hex("#3A2A30"), Hex("#5E4650"), Hex("#C83A3A"), Hex("#FF6A5A"), false, false), new Vector2(0.5f, 0f), PPU);
+            Single(dir, "fx_silk", SilkStrand(), new Vector2(0f, 0.5f), PPU);
+            Single(dir, "fx_silkglob", SilkGlob(), new Vector2(0.5f, 0.5f), PPU);
+            Single(dir, "fx_webpatch", WebPatchArt(), new Vector2(0.5f, 0f), PPU);
+            Single(dir, "fx_cocoon", CocoonArt(), new Vector2(0.5f, 0.5f), PPU);
+            Single(dir, "prop_webbridge", WebBridgeArt(), new Vector2(0.5f, 1f), PPU, fullRect: true);
+            Single(dir, "bg_bigweb", BigWeb(), new Vector2(0.5f, 0.5f), 16f);
+            Single(dir, "prop_eggsac", EggSac(), new Vector2(0.5f, 0f), PPU);
+            Single(dir, "prop_cocooned", HangingCocoon(), new Vector2(0.5f, 1f), PPU);
+
+            // floor 50: the Parasite and the throne room
+            Sheet(dir, "bug_parasite", ParasiteFrames(), new Vector2(0.45f, 0f), PPU);
+            Single(dir, "prop_throne", Throne(), new Vector2(0.5f, 0f), PPU);
+            Single(dir, "bg_storm", StormSky(), new Vector2(0.5f, 0.5f), 16f);
+
+            // fire (Flame Slash)
+            Single(dir, "fx_fireslash", FireSlash(), new Vector2(0.31f, 0.5f), PPU);
+            Sheet(dir, "fx_firewave", new[] { FireSlash(1), FireSlash(2), FireSlash(3) }, new Vector2(0.31f, 0.5f), PPU);
+            Single(dir, "icon_flameslash", FlameSlashIcon(), new Vector2(0.5f, 0.5f), PPU);
+            Sheet(dir, "fx_firearc", FireArcFrames(), new Vector2(50f / 160f, 62f / 160f), PPU);
+            Sheet(dir, "fx_fireglob", FireGlobFrames(), new Vector2(12f / 18f, 0.5f), PPU);
+            Sheet(dir, "fx_groundfire", GroundFireFrames(), new Vector2(0.5f, 0f), PPU);
+            // the Infested Knight's corrupted version of it
+            Sheet(dir, "fx_voidarc", VoidFire(FireArcFrames()), new Vector2(50f / 160f, 62f / 160f), PPU);
+            Sheet(dir, "fx_voidglob", VoidFire(FireGlobFrames()), new Vector2(12f / 18f, 0.5f), PPU);
+            Sheet(dir, "fx_voidfire", VoidFire(GroundFireFrames()), new Vector2(0.5f, 0f), PPU);
+
+            // crimson flask
+            Single(dir, "fx_flask", FlaskSprite(), new Vector2(0.5f, 0.5f), PPU);
+            Single(dir, "icon_flask", FlaskIcon(), new Vector2(0.5f, 0.5f), PPU);
+
+            // sword: smears for the 3 slashes, the heavy stab
+            Single(dir, "fx_smear_diagonal", SmearDiagonal(), new Vector2(44f / 112f, 56f / 112f), PPU);
+            Single(dir, "fx_smear_rising", SmearRising(), new Vector2(44f / 112f, 56f / 112f), PPU);
+            Single(dir, "fx_smear_cleave", SmearCleave(), new Vector2(56f / 144f, 66f / 144f), PPU);
+            Single(dir, "fx_thrust", ThrustStreak(), new Vector2(0f, 0.5f), PPU);
+            Single(dir, "fx_star", ImpactStar(), new Vector2(0.5f, 0.5f), PPU);
+
+            // other skills
+            Single(dir, "fx_overhead", OverheadArc(), new Vector2(48f / 128f, 44f / 128f), PPU);
+            Single(dir, "fx_cutline", CutLine(), new Vector2(0.5f, 0.5f), PPU);
+            Single(dir, "fx_magiccircle", MagicCircle(), new Vector2(0.5f, 0.5f), PPU);
+            Single(dir, "fx_crack", GroundCrack(), new Vector2(0.5f, 0f), PPU);
+            Single(dir, "fx_scorch", Scorch(), new Vector2(0.5f, 0.5f), PPU);
+            Sheet(dir, "fx_zap", ZapFrames(), new Vector2(0f, 0.5f), PPU);
+            Sheet(dir, "fx_orb", OrbFrames(), new Vector2(0.5f, 0.5f), PPU);
+            Single(dir, "fx_shockring", ShockRing(), new Vector2(0.5f, 0.5f), PPU);
+            Sheet(dir, "fx_bolt", BoltFrames(), new Vector2(0.5f, 0f), PPU);
+            Single(dir, "icon_overhead", IconOverhead(), new Vector2(0.5f, 0.5f), PPU);
+            Single(dir, "icon_thousandcuts", IconThousandCuts(), new Vector2(0.5f, 0.5f), PPU);
+            Single(dir, "icon_orbs", IconOrbs(), new Vector2(0.5f, 0.5f), PPU);
+            Single(dir, "icon_thunder", IconThunder(), new Vector2(0.5f, 0.5f), PPU);
+            Single(dir, "icon_thunderclap", IconThunderclap(), new Vector2(0.5f, 0.5f), PPU);
+            Single(dir, "icon_riposte", IconRiposte(), new Vector2(0.5f, 0.5f), PPU);
+            // the ultimate
+            Single(dir, "icon_heavenfall", IconHeavenfall(), new Vector2(0.5f, 0.5f), PPU);
+            Single(dir, "fx_holyblade", HolyBlade(), new Vector2(0.5f, 0f), PPU);
+            Single(dir, "fx_moon", MoonCrescent(), new Vector2(0.5f, 0.5f), PPU);
+            Single(dir, "fx_lightspear", LightSpear(), new Vector2(0.5f, 0f), PPU);
+            Single(dir, "fx_lightpillar", LightPillar(), new Vector2(0.5f, 0f), PPU, FilterMode.Bilinear);
+
+            // effects
+            Single(dir, "fx_exclaim", Exclaim(), new Vector2(0.5f, 0f), PPU);
+            Single(dir, "fx_slash", Slash(), new Vector2(0.35f, 0.5f), PPU);
             Single(dir, "fx_ring", Ring(), new Vector2(0.5f, 0.5f), PPU);
             Single(dir, "fx_glow", SoftCircle(64, 1.8f), new Vector2(0.5f, 0.5f), 64f, FilterMode.Bilinear);
+            Single(dir, "fx_fog", SoftEllipse(128, 48), new Vector2(0.5f, 0.5f), 16f, FilterMode.Bilinear);
+            Single(dir, "fx_shaft", Shaft(), new Vector2(0.5f, 1f), 32f, FilterMode.Bilinear);
+            Single(dir, "fx_vignette", Vignette(), new Vector2(0.5f, 0.5f), 100f, FilterMode.Bilinear);
 
             AssetDatabase.Refresh();
         }

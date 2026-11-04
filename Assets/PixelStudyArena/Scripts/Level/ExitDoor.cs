@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace PixelStudy.Arena
 {
-    /// <summary>The way out. Mockup 2 opens it as soon as the level starts (OpenInstantly).</summary>
+    /// <summary>The way out. Barred until the arena is cleared, then the gate lifts and a portal glows.</summary>
     public class ExitDoor : MonoBehaviour
     {
         public Transform bars;
@@ -30,22 +30,10 @@ namespace PixelStudy.Arena
             StartCoroutine(OpenRoutine());
         }
 
-        /// <summary>Already open when the level starts: gate up, portal swirling, no animation.</summary>
-        public void OpenInstantly()
-        {
-            if (IsOpen) return;
-            IsOpen = true;
-            bars.localPosition += Vector3.up * 2.6f;
-            SetAlpha(portal, 1f);
-            SetAlpha(glow, 0.7f);
-            if (portalAnim != null) portalAnim.Play("swirl");
-            if (sparks != null) sparks.SetActive(true);
-            if (arrow != null) arrow.gameObject.SetActive(true);
-        }
-
         IEnumerator OpenRoutine()
         {
             ArenaFX.Shake(0.3f);
+            Sfx.Play("door", 0.7f, 1f, 0f);
             var start = bars.localPosition;
             var end = start + Vector3.up * 2.6f;
             for (float t = 0f; t < 1f; t += Time.deltaTime / 0.9f)

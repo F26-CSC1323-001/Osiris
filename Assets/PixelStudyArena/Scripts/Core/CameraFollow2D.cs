@@ -21,16 +21,26 @@ namespace PixelStudy.Arena
         Vector3 basePosition;
         float look;
         float trauma;
+        float baseSize, zoom = 1f, zoomTarget = 1f, zoomHold;
 
         public static void Shake(float amount)
         {
             if (instance != null) instance.trauma = Mathf.Clamp01(instance.trauma + amount);
         }
 
+        /// <summary>Punches the view in (factor below 1) for a moment, then eases back (criticals, big skills).</summary>
+        public static void Zoom(float factor, float hold)
+        {
+            if (instance == null) return;
+            instance.zoomTarget = factor;
+            instance.zoomHold = hold;
+        }
+
         void Awake()
         {
             instance = this;
             cam = GetComponent<Camera>();
+            baseSize = cam.orthographicSize;
         }
 
         void Start()
@@ -57,10 +67,17 @@ namespace PixelStudy.Arena
 
         void LateUpdate()
         {
-            if (player != null)
+            // real time: the camera keeps up with the knight while a skill slows the world down
+            float dt = Time.timeScale == 0f ? 0f : Time.unscaledDeltaTime;
+            zoomHold -= Time.unscaledDeltaTime;
+            float wantZoom = zoomHold > 0f ? zoomTarget : 1f;
+            zoom = Mathf.Lerp(zoom, wantZoom, 1f - Mathf.Exp(-(zoomHold > 0f ? 22f : 6f) * Time.unscaledDeltaTime));
+            cam.orthographicSize = baseSize * zoom;
+
+            if (player != null && dt > 0f)
             {
-                look = Mathf.Lerp(look, player.Facing * lookAhead, Time.deltaTime * 2.5f);
-                basePosition = Vector3.SmoothDamp(basePosition, Clamp(Desired()), ref velocity, smoothTime, Mathf.Infinity, Time.deltaTime);
+                look = Mathf.Lerp(look, player.Facing * lookAhead, dt * 2.5f);
+                basePosition = Vector3.SmoothDamp(basePosition, Clamp(Desired()), ref velocity, smoothTime, Mathf.Infinity, dt);
             }
 
             trauma = Mathf.MoveTowards(trauma, 0f, Time.unscaledDeltaTime * 1.6f);
